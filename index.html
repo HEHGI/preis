@@ -1,0 +1,1447 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Engineering Research Deck | Industrial AI & VSM Assembly Optimization</title>
+    
+    <!-- Google Fonts: Inter & Kanit -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Kanit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        navy: {
+                            DEFAULT: '#0D2340',
+                            dark: '#081629',
+                            light: '#183861',
+                        },
+                        ice: {
+                            DEFAULT: '#4A698C',
+                            light: '#718EA6',
+                            muted: '#E2E8F0',
+                        },
+                        charcoal: '#333333',
+                        accent: {
+                            green: '#10B981',
+                            orange: '#F97316',
+                            yellow: '#F59E0B',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'Kanit', 'sans-serif'],
+                        heading: ['Kanit', 'Inter', 'sans-serif'],
+                        mono: ['Courier New', 'monospace'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- Chart.js for Interactive Technical Charts -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        body {
+            font-family: 'Inter', 'Kanit', sans-serif;
+            color: #333333;
+            background-color: #081629;
+            overflow-x: hidden;
+        }
+
+        h1, h2, h3, h4, .font-heading {
+            font-family: 'Kanit', 'Inter', sans-serif;
+        }
+
+        /* Trapezoid Geometric Split for Cover */
+        .trapezoid-left {
+            clip-path: polygon(0 0, 100% 0, 85% 100%, 0 100%);
+        }
+        @media (max-width: 1024px) {
+            .trapezoid-left {
+                clip-path: none;
+            }
+        }
+
+        /* Custom Scrollbars */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #081629;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #4A698C;
+            border-radius: 3px;
+        }
+
+        /* Slide Pane Transitions */
+        .slide-pane {
+            display: none;
+            opacity: 0;
+            transform: translateY(16px) scale(0.99);
+            transition: opacity 0.4s ease, transform 0.4s ease;
+        }
+        .slide-pane.active {
+            display: flex;
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+
+        /* Sub-step slider animation for Slide 6 */
+        .substep-pane {
+            display: none;
+            opacity: 0;
+            transform: translateX(20px);
+            transition: opacity 0.35s ease, transform 0.35s ease;
+        }
+        .substep-pane.active {
+            display: block;
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        /* Laser Grid Background */
+        .bg-grid-pattern {
+            background-image: radial-gradient(rgba(74, 105, 140, 0.25) 1px, transparent 1px);
+            background-size: 24px 24px;
+        }
+
+        /* Animated Glowing Pulse & Ring */
+        @keyframes laserGlow {
+            0%, 100% { filter: drop-shadow(0 0 4px rgba(16, 185, 129, 0.8)); }
+            50% { filter: drop-shadow(0 0 12px rgba(16, 185, 129, 1)); }
+        }
+        .laser-pulse {
+            animation: laserGlow 2s indefinite ease-in-out;
+        }
+
+        /* Dash line running animation */
+        @keyframes dashFlow {
+            to { stroke-dashoffset: -40; }
+        }
+        .flowing-dash {
+            stroke-dasharray: 8 6;
+            animation: dashFlow 1.8s linear infinite;
+        }
+
+        /* Slide step indicator pulse */
+        .step-active-glow {
+            box-shadow: 0 0 15px rgba(249, 115, 22, 0.5);
+        }
+    </style>
+</head>
+<body class="h-screen flex flex-col justify-between antialiased select-none">
+
+    <!-- TOP STICKY NAVIGATION BAR -->
+    <header class="bg-navy text-white h-16 px-4 md:px-8 flex items-center justify-between border-b border-navy-light shadow-lg shrink-0 z-50">
+        <div class="flex items-center space-x-4">
+            <div class="bg-accent-orange text-navy font-black px-3 py-1 rounded text-xs tracking-wider uppercase flex items-center gap-1.5 shadow">
+                <i class="fa-solid fa-microchip animate-pulse"></i> Engineering Deck
+            </div>
+            <div class="hidden md:flex flex-col">
+                <span class="text-[11px] font-semibold tracking-wider text-ice-light uppercase font-mono">Industrial Systems Research</span>
+                <span class="text-sm font-bold text-white truncate max-w-md" id="nav-slide-title">1. Title: SMT Optimization</span>
+            </div>
+        </div>
+
+        <!-- Slide Progress Bar & Indicator -->
+        <div class="hidden lg:flex flex-col items-center w-1/3 px-4">
+            <div class="flex justify-between w-full text-xs text-ice-light font-mono mb-1">
+                <span>PRESENTATION PROGRESS</span>
+                <span id="slide-number-label">01 / 12</span>
+            </div>
+            <div class="w-full bg-navy-dark rounded-full h-2 overflow-hidden border border-navy-light relative">
+                <div id="progress-bar" class="bg-gradient-to-r from-ice via-accent-orange to-accent-green h-full w-[8.33%] transition-all duration-300"></div>
+            </div>
+        </div>
+
+        <!-- Header Action & Control Buttons -->
+        <div class="flex items-center space-x-2 md:space-x-3">
+            <button onclick="toggleAutoplay()" id="autoplay-btn" class="px-3 py-1.5 bg-navy-light hover:bg-ice transition text-xs font-semibold rounded flex items-center gap-1.5 text-white" title="Toggle Auto Presentation">
+                <i class="fa-solid fa-play" id="autoplay-icon"></i>
+                <span class="hidden sm:inline" id="autoplay-text">Auto</span>
+            </button>
+
+            <button onclick="toggleOutlineModal()" class="px-3 py-1.5 bg-navy-light hover:bg-ice transition text-xs font-semibold rounded flex items-center gap-1.5 text-white" title="Slide Drawer">
+                <i class="fa-solid fa-list-squares"></i>
+                <span class="hidden sm:inline">Index</span>
+            </button>
+
+            <button onclick="toggleFullscreen()" class="p-2 bg-navy-light hover:bg-ice transition text-xs rounded text-white" title="Toggle Fullscreen">
+                <i class="fa-solid fa-expand"></i>
+            </button>
+
+            <div class="h-6 w-px bg-navy-light my-auto"></div>
+
+            <button onclick="prevSlide()" id="prev-btn" class="px-3 py-1.5 bg-navy-light hover:bg-ice disabled:opacity-30 transition text-xs font-bold rounded text-white flex items-center gap-1">
+                <i class="fa-solid fa-chevron-left"></i>
+                <span class="hidden sm:inline">PREV</span>
+            </button>
+
+            <button onclick="nextSlide()" id="next-btn" class="px-3 py-1.5 bg-accent-orange hover:bg-amber-600 transition text-xs font-bold rounded text-navy flex items-center gap-1 shadow">
+                <span class="hidden sm:inline">NEXT</span>
+                <i class="fa-solid fa-chevron-right"></i>
+            </button>
+        </div>
+    </header>
+
+    <!-- SLIDE VIEWPORT CONTAINER -->
+    <main class="flex-1 relative overflow-y-auto bg-navy-dark flex items-center justify-center p-2 sm:p-4 md:p-6">
+        <div class="w-full max-w-7xl h-full min-h-[620px] max-h-[850px] bg-white rounded-2xl border border-slate-700/60 shadow-2xl flex flex-col overflow-hidden relative">
+
+            <!-- SLIDE 1: COVER TITLE (GEOMETRIC TRAPEZOID SPLIT WITH ANIMATED CIRCUIT PATH) -->
+            <div id="slide-1" class="slide-pane active w-full h-full flex-col lg:flex-row">
+                <!-- Left Section (Dark Navy Trapezoid) -->
+                <div class="w-full lg:w-7/12 bg-navy trapezoid-left p-8 sm:p-12 lg:p-16 flex flex-col justify-between text-white relative bg-grid-pattern z-10">
+                    <div>
+                        <div class="inline-flex items-center gap-2 px-3 py-1 bg-navy-light/80 border border-ice/30 rounded-full text-xs font-medium text-accent-yellow mb-6">
+                            <span class="w-2 h-2 rounded-full bg-accent-green animate-ping"></span> Advanced Industrial Engineering Research
+                        </div>
+                        <h1 class="text-3xl sm:text-4xl lg:text-5xl font-black font-heading leading-tight tracking-tight mb-4 text-white">
+                            Optimization of SMT Assembly Lines
+                        </h1>
+                        <p class="text-base sm:text-lg font-light text-ice-muted leading-relaxed max-w-xl">
+                            Integrating AI Closed-Loop Vision and Value Stream Mapping (VSM) for Zero-Defect High-Speed PCB Production
+                        </p>
+                    </div>
+
+                    <div class="mt-8 pt-8 border-t border-navy-light/60 grid grid-cols-2 gap-4 text-xs sm:text-sm">
+                        <div>
+                            <span class="block text-ice-light font-medium uppercase tracking-wider text-[11px]">Lead Researcher</span>
+                            <span class="font-bold text-white text-base">Dr. Alex V. Mercer, PE</span>
+                            <span class="block text-slate-300 text-xs">Automation Systems Lab</span>
+                        </div>
+                        <div>
+                            <span class="block text-ice-light font-medium uppercase tracking-wider text-[11px]">Target Domain</span>
+                            <span class="font-bold text-white text-base">Smart Robotics & IoT</span>
+                            <span class="block text-slate-300 text-xs">ISO-9001 Benchmark</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Section (Schematic Graphic & Running Animated Laser Dot) -->
+                <div class="w-full lg:w-5/12 bg-slate-900 p-8 flex flex-col justify-between relative overflow-hidden">
+                    <div class="absolute inset-0 opacity-20 bg-[radial-gradient(#4A698C_1px,transparent_1px)] [background-size:16px_16px]"></div>
+                    
+                    <div class="relative z-10 space-y-6 my-auto">
+                        <div class="bg-navy/90 backdrop-blur border border-ice/30 rounded-xl p-5 shadow-xl">
+                            <div class="flex justify-between items-center mb-3">
+                                <span class="text-xs font-mono text-accent-green flex items-center gap-2">
+                                    <span class="w-2.5 h-2.5 rounded-full bg-accent-green animate-pulse"></span> TELEMETRY FEED
+                                </span>
+                                <span class="text-xs text-ice-light font-mono">MODEL v4.2</span>
+                            </div>
+                            <div class="grid grid-cols-2 gap-3 text-white font-mono">
+                                <div class="bg-navy-dark/80 p-3 rounded-lg border border-ice/20">
+                                    <div class="text-[10px] text-slate-400">Baseline Yield</div>
+                                    <div class="text-2xl font-black text-white">91.2%</div>
+                                </div>
+                                <div class="bg-navy-dark/80 p-3 rounded-lg border border-accent-green/50">
+                                    <div class="text-[10px] text-slate-400">Target Yield</div>
+                                    <div class="text-2xl font-black text-accent-green">98.5%</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Technical SVG Line Circuit with Flowing Animated Glowing Circle -->
+                        <div class="border border-ice/40 bg-navy-dark/90 rounded-xl p-4 relative shadow-lg">
+                            <div class="text-[10px] font-mono text-ice-light mb-2 flex justify-between">
+                                <span>SMT REFLOW CIRCUIT PATH</span>
+                                <span class="text-accent-yellow">SIGNAL FLOW</span>
+                            </div>
+                            <svg viewBox="0 0 320 120" class="w-full h-auto">
+                                <!-- Main Flow Path -->
+                                <path id="coverPath" d="M 20 60 L 90 60 L 160 60 L 230 60 L 300 60" fill="none" stroke="#4A698C" stroke-width="3" class="flowing-dash"/>
+                                
+                                <!-- Stage Circles -->
+                                <circle cx="40" cy="60" r="16" fill="#0D2340" stroke="#10B981" stroke-width="2"/>
+                                <text x="32" y="64" font-size="9" fill="#FFF" font-weight="bold">SPI</text>
+
+                                <circle cx="120" cy="60" r="16" fill="#0D2340" stroke="#F97316" stroke-width="2"/>
+                                <text x="110" y="64" font-size="9" fill="#FFF" font-weight="bold">P&P</text>
+
+                                <circle cx="200" cy="60" r="16" fill="#0D2340" stroke="#4A698C" stroke-width="2"/>
+                                <text x="189" y="64" font-size="9" fill="#FFF" font-weight="bold">OVEN</text>
+
+                                <circle cx="280" cy="60" r="16" fill="#0D2340" stroke="#10B981" stroke-width="2"/>
+                                <text x="270" y="64" font-size="9" fill="#FFF" font-weight="bold">AOI</text>
+
+                                <!-- Animated Circle Traveling Along Line Path -->
+                                <circle r="6" fill="#F59E0B" class="laser-pulse">
+                                    <animateMotion dur="3.5s" repeatCount="indefinite" path="M 20 60 L 90 60 L 160 60 L 230 60 L 300 60"/>
+                                </circle>
+                            </svg>
+                        </div>
+                    </div>
+
+                    <div class="relative z-10 text-[11px] text-slate-400 font-mono text-right mt-4">
+                        SYSTEM ARCHITECTURE // ISO-9001 COMPLIANT
+                    </div>
+                </div>
+            </div>
+
+            <!-- SLIDE 2: RESEARCH OBJECTIVES -->
+            <div id="slide-2" class="slide-pane w-full h-full p-6 sm:p-10 flex-col justify-between bg-white">
+                <div>
+                    <div class="flex items-center gap-3 mb-2">
+                        <span class="h-3 w-3 bg-navy rounded-full"></span>
+                        <span class="text-xs font-bold text-ice uppercase tracking-widest font-mono">Section 01 // Targets</span>
+                    </div>
+                    <h2 class="text-3xl font-black font-heading text-navy mb-2">2. Research Objectives</h2>
+                    <p class="text-sm text-charcoal max-w-3xl">Targeted engineering goals structured to maximize Overall Equipment Effectiveness (OEE) and eliminate micro-stoppages.</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 my-auto">
+                    <!-- Objective 1 -->
+                    <div class="border-t-4 border-navy bg-slate-50 p-6 rounded-b-xl shadow-sm hover:shadow-md transition">
+                        <div class="flex items-center justify-between mb-4">
+                            <span class="w-10 h-10 rounded-lg bg-navy text-white flex items-center justify-center font-black text-lg">01</span>
+                            <span class="text-xs font-bold text-accent-green bg-green-100 px-2.5 py-1 rounded-full">-34% DOWNTIME</span>
+                        </div>
+                        <h3 class="text-lg font-bold text-navy mb-2">Unplanned Downtime Reduction</h3>
+                        <p class="text-xs text-charcoal leading-relaxed mb-4">
+                            Deploy AI vibration and optical sensors on high-speed pick-and-place nozzles to predict component misplacement before line halts occur.
+                        </p>
+                        <ul class="text-xs text-slate-600 space-y-2 border-t border-slate-200 pt-3">
+                            <li class="flex items-center gap-2"><i class="fa-solid fa-circle-check text-accent-green"></i> Real-time anomaly score trigger</li>
+                            <li class="flex items-center gap-2"><i class="fa-solid fa-circle-check text-accent-green"></i> MTBF target extension: +120 hrs</li>
+                        </ul>
+                    </div>
+
+                    <!-- Objective 2 -->
+                    <div class="border-t-4 border-ice bg-slate-50 p-6 rounded-b-xl shadow-sm hover:shadow-md transition">
+                        <div class="flex items-center justify-between mb-4">
+                            <span class="w-10 h-10 rounded-lg bg-ice text-white flex items-center justify-center font-black text-lg">02</span>
+                            <span class="text-xs font-bold text-accent-orange bg-orange-100 px-2.5 py-1 rounded-full">THERMAL RESTRUCTURE</span>
+                        </div>
+                        <h3 class="text-lg font-bold text-navy mb-2">Thermal Soak Profile Optimization</h3>
+                        <p class="text-xs text-charcoal leading-relaxed mb-4">
+                            Redesign the 10-zone reflow furnace thermal profile using Value Stream Mapping (VSM) to eliminate non-value thermal soak durations.
+                        </p>
+                        <ul class="text-xs text-slate-600 space-y-2 border-t border-slate-200 pt-3">
+                            <li class="flex items-center gap-2"><i class="fa-solid fa-circle-check text-accent-green"></i> Liquids equilibrium tuning</li>
+                            <li class="flex items-center gap-2"><i class="fa-solid fa-circle-check text-accent-green"></i> Energy draw drop: -14.5 kWh</li>
+                        </ul>
+                    </div>
+
+                    <!-- Objective 3 -->
+                    <div class="border-t-4 border-accent-orange bg-slate-50 p-6 rounded-b-xl shadow-sm hover:shadow-md transition">
+                        <div class="flex items-center justify-between mb-4">
+                            <span class="w-10 h-10 rounded-lg bg-accent-orange text-white flex items-center justify-center font-black text-lg">03</span>
+                            <span class="text-xs font-bold text-navy bg-amber-100 px-2.5 py-1 rounded-full">+7.3% FPY GAIN</span>
+                        </div>
+                        <h3 class="text-lg font-bold text-navy mb-2">First Pass Yield (FPY) Enhancement</h3>
+                        <p class="text-xs text-charcoal leading-relaxed mb-4">
+                            Elevate assembly line First Pass Yield from baseline 91.2% to 98.5% over a 6-month trial using SPI-to-Printer closed feedback loops.
+                        </p>
+                        <ul class="text-xs text-slate-600 space-y-2 border-t border-slate-200 pt-3">
+                            <li class="flex items-center gap-2"><i class="fa-solid fa-circle-check text-accent-green"></i> Voiding threshold under 3.5%</li>
+                            <li class="flex items-center gap-2"><i class="fa-solid fa-circle-check text-accent-green"></i> Zero tombstoning defect goal</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="bg-navy-dark text-white p-4 rounded-xl flex justify-between items-center text-xs">
+                    <span class="font-mono text-ice-light"><i class="fa-solid fa-circle-info text-accent-yellow mr-2"></i>Target OEE Threshold: 85% World-Class Lean Benchmark</span>
+                    <span class="font-bold text-accent-yellow font-mono">ISO 22400 Standard</span>
+                </div>
+            </div>
+
+            <!-- SLIDE 3: EXPERIMENTAL VARIABLES MATRIX -->
+            <div id="slide-3" class="slide-pane w-full h-full p-6 sm:p-10 flex-col justify-between bg-white">
+                <div>
+                    <div class="flex items-center gap-3 mb-1">
+                        <span class="h-3 w-3 bg-navy rounded-full"></span>
+                        <span class="text-xs font-bold text-ice uppercase tracking-widest font-mono">Section 02 // Variable Architecture</span>
+                    </div>
+                    <h2 class="text-3xl font-black font-heading text-navy mb-1">3, 4 & 5. Experimental Variables Matrix</h2>
+                    <p class="text-sm text-charcoal">Control logic parameter definition for statistical process control (SPC).</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 my-auto">
+                    <!-- Column 1: Independent Variable -->
+                    <div class="border border-slate-200 rounded-xl p-5 bg-gradient-to-b from-blue-50/60 to-white relative">
+                        <div class="absolute -top-3 left-4 bg-navy text-white text-[11px] font-bold px-3 py-0.5 rounded uppercase font-mono">
+                            3. Independent Variables
+                        </div>
+                        <div class="mt-2 space-y-4">
+                            <div class="bg-white p-3.5 rounded-lg border border-slate-200 shadow-sm">
+                                <div class="text-xs font-bold text-navy">Reflow Peak Temperature</div>
+                                <div class="text-xl font-mono font-bold text-ice">245°C - 255°C</div>
+                                <div class="text-[11px] text-slate-500">Adjusted in steps of 2.5°C</div>
+                            </div>
+                            <div class="bg-white p-3.5 rounded-lg border border-slate-200 shadow-sm">
+                                <div class="text-xs font-bold text-navy">Conveyor Belt Speed</div>
+                                <div class="text-xl font-mono font-bold text-ice">60 - 80 cm/min</div>
+                                <div class="text-[11px] text-slate-500">Regulated via servo stepper motors</div>
+                            </div>
+                            <div class="bg-white p-3.5 rounded-lg border border-slate-200 shadow-sm">
+                                <div class="text-xs font-bold text-navy">AI Inspection Inference</div>
+                                <div class="text-xl font-mono font-bold text-ice">2.4 GHz Sampling</div>
+                                <div class="text-[11px] text-slate-500">Real-time edge neural inference</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Column 2: Dependent Variable -->
+                    <div class="border border-slate-200 rounded-xl p-5 bg-gradient-to-b from-orange-50/60 to-white relative">
+                        <div class="absolute -top-3 left-4 bg-accent-orange text-navy font-bold text-[11px] px-3 py-0.5 rounded uppercase font-mono">
+                            4. Dependent Variables
+                        </div>
+                        <div class="mt-2 space-y-4">
+                            <div class="bg-white p-3.5 rounded-lg border border-slate-200 shadow-sm">
+                                <div class="text-xs font-bold text-navy">Defect Density Rate</div>
+                                <div class="text-xl font-mono font-bold text-accent-orange">&lt; 150 PPM</div>
+                                <div class="text-[11px] text-slate-500">Measured at final 3D AOI stage</div>
+                            </div>
+                            <div class="bg-white p-3.5 rounded-lg border border-slate-200 shadow-sm">
+                                <div class="text-xs font-bold text-navy">Joint Shear Strength</div>
+                                <div class="text-xl font-mono font-bold text-accent-orange">48.2 MPa Avg</div>
+                                <div class="text-[11px] text-slate-500">Verified via destructive mechanical pull</div>
+                            </div>
+                            <div class="bg-white p-3.5 rounded-lg border border-slate-200 shadow-sm">
+                                <div class="text-xs font-bold text-navy">Total Line Takt Time</div>
+                                <div class="text-xl font-mono font-bold text-accent-orange">14.2 sec / unit</div>
+                                <div class="text-[11px] text-slate-500">Down from 21.8 sec baseline</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Column 3: Control Variable -->
+                    <div class="border border-slate-200 rounded-xl p-5 bg-gradient-to-b from-emerald-50/60 to-white relative">
+                        <div class="absolute -top-3 left-4 bg-accent-green text-white font-bold text-[11px] px-3 py-0.5 rounded uppercase font-mono">
+                            5. Control Variables
+                        </div>
+                        <div class="mt-2 space-y-4">
+                            <div class="bg-white p-3.5 rounded-lg border border-slate-200 shadow-sm">
+                                <div class="text-xs font-bold text-navy">Cleanroom Climate</div>
+                                <div class="text-xl font-mono font-bold text-accent-green">45% RH ±3% | 22°C</div>
+                                <div class="text-[11px] text-slate-500">Constant HVAC closed-loop feedback</div>
+                            </div>
+                            <div class="bg-white p-3.5 rounded-lg border border-slate-200 shadow-sm">
+                                <div class="text-xs font-bold text-navy">Solder Alloy Standard</div>
+                                <div class="text-xl font-mono font-bold text-accent-green">SAC305 (Sn-Ag-Cu)</div>
+                                <div class="text-[11px] text-slate-500">Type 4 powder size distribution</div>
+                            </div>
+                            <div class="bg-white p-3.5 rounded-lg border border-slate-200 shadow-sm">
+                                <div class="text-xs font-bold text-navy">PCB Substrate</div>
+                                <div class="text-xl font-mono font-bold text-accent-green">1.6mm FR-4 TG170</div>
+                                <div class="text-[11px] text-slate-500">ENIG surface finish (3µin gold thickness)</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="text-xs text-charcoal border-l-4 border-navy pl-3 italic">
+                    ANOVA Statistical Protocol: p-value significance threshold set at p &lt; 0.01 across 1,200 sample boards.
+                </div>
+            </div>
+
+            <!-- SLIDE 4: SIGNIFICANCE & ECRS FRAMEWORK -->
+            <div id="slide-4" class="slide-pane w-full h-full p-6 sm:p-10 flex-col justify-between bg-white">
+                <div>
+                    <div class="flex items-center gap-3 mb-1">
+                        <span class="h-3 w-3 bg-navy rounded-full"></span>
+                        <span class="text-xs font-bold text-ice uppercase tracking-widest font-mono">Section 03 // Lean Transformation</span>
+                    </div>
+                    <h2 class="text-3xl font-black font-heading text-navy mb-1">4. Significance & ECRS Framework Application</h2>
+                    <p class="text-sm text-charcoal">Industrial Engineering ECRS Principles implemented for process stream optimization.</p>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 my-auto">
+                    <!-- E: Eliminate -->
+                    <div class="border-t-4 border-accent-yellow bg-slate-50 p-5 rounded-b-xl flex flex-col justify-between shadow-sm">
+                        <div>
+                            <div class="flex justify-between items-center mb-3">
+                                <span class="bg-amber-100 text-amber-900 text-xs font-black px-2.5 py-1 rounded-md font-mono">E</span>
+                                <span class="text-[10px] font-bold text-slate-500 uppercase">Eliminate</span>
+                            </div>
+                            <h3 class="font-bold text-navy text-base mb-2">Manual Inspection Bottlenecks</h3>
+                            <p class="text-xs text-charcoal leading-relaxed mb-4">
+                                Removed redundant offline microscope sampling by utilizing 100% inline AI-powered optical verification.
+                            </p>
+                        </div>
+                        <div class="bg-amber-50 p-2.5 rounded-lg text-[11px] text-amber-900 border border-amber-200 font-mono">
+                            <strong>Impact:</strong> -72% QA labor hours
+                        </div>
+                    </div>
+
+                    <!-- C: Combine -->
+                    <div class="border-t-4 border-accent-orange bg-slate-50 p-5 rounded-b-xl flex flex-col justify-between shadow-sm">
+                        <div>
+                            <div class="flex justify-between items-center mb-3">
+                                <span class="bg-orange-100 text-orange-900 text-xs font-black px-2.5 py-1 rounded-md font-mono">C</span>
+                                <span class="text-[10px] font-bold text-slate-500 uppercase">Combine</span>
+                            </div>
+                            <h3 class="font-bold text-navy text-base mb-2">Solder & Fiducial Alignment</h3>
+                            <p class="text-xs text-charcoal leading-relaxed mb-4">
+                                Integrated solder stencil positional checks directly into the pick-and-place fiducial scanner calibration cycle.
+                            </p>
+                        </div>
+                        <div class="bg-orange-50 p-2.5 rounded-lg text-[11px] text-orange-900 border border-orange-200 font-mono">
+                            <strong>Impact:</strong> -4.2s setup time / board
+                        </div>
+                    </div>
+
+                    <!-- R: Rearrange -->
+                    <div class="border-t-4 border-ice bg-slate-50 p-5 rounded-b-xl flex flex-col justify-between shadow-sm">
+                        <div>
+                            <div class="flex justify-between items-center mb-3">
+                                <span class="bg-blue-100 text-blue-900 text-xs font-black px-2.5 py-1 rounded-md font-mono">R</span>
+                                <span class="text-[10px] font-bold text-slate-500 uppercase">Rearrange</span>
+                            </div>
+                            <h3 class="font-bold text-navy text-base mb-2">Reflow Warmup Sequencing</h3>
+                            <p class="text-xs text-charcoal leading-relaxed mb-4">
+                                Shifted thermal profiling calibration to run concurrently with feeder component load routines.
+                            </p>
+                        </div>
+                        <div class="bg-blue-50 p-2.5 rounded-lg text-[11px] text-blue-900 border border-blue-200 font-mono">
+                            <strong>Impact:</strong> Zero line-start delay
+                        </div>
+                    </div>
+
+                    <!-- S: Simplify -->
+                    <div class="border-t-4 border-accent-green bg-slate-50 p-5 rounded-b-xl flex flex-col justify-between shadow-sm">
+                        <div>
+                            <div class="flex justify-between items-center mb-3">
+                                <span class="bg-emerald-100 text-emerald-900 text-xs font-black px-2.5 py-1 rounded-md font-mono">S</span>
+                                <span class="text-[10px] font-bold text-slate-500 uppercase">Simplify</span>
+                            </div>
+                            <h3 class="font-bold text-navy text-base mb-2">Nozzle Trajectory Paths</h3>
+                            <p class="text-xs text-charcoal leading-relaxed mb-4">
+                                Replaced fixed linear head movement algorithms with bezier-curve minimum kinetic jerk paths.
+                            </p>
+                        </div>
+                        <div class="bg-emerald-50 p-2.5 rounded-lg text-[11px] text-emerald-900 border border-emerald-200 font-mono">
+                            <strong>Impact:</strong> +18% placement speed
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-navy p-4 rounded-xl text-white flex flex-col sm:flex-row justify-between items-center text-xs">
+                    <span class="font-semibold"><i class="fa-solid fa-award text-accent-yellow mr-2"></i>Annual Economic Value Created:</span>
+                    <span class="font-mono text-accent-green text-sm">$184,000 / Year Savings per Assembly Line</span>
+                </div>
+            </div>
+
+            <!-- SLIDE 5: STRENGTHS & WEAKNESSES MATRIX -->
+            <div id="slide-5" class="slide-pane w-full h-full p-6 sm:p-10 flex-col justify-between bg-white">
+                <div>
+                    <div class="flex items-center gap-3 mb-1">
+                        <span class="h-3 w-3 bg-navy rounded-full"></span>
+                        <span class="text-xs font-bold text-ice uppercase tracking-widest font-mono">Section 04 // Evaluation</span>
+                    </div>
+                    <h2 class="text-3xl font-black font-heading text-navy mb-1">5. Research Strengths & Weaknesses Analysis</h2>
+                    <p class="text-sm text-charcoal">Engineering evaluation matrix highlighting key capabilities and operational constraints.</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 my-auto">
+                    <!-- Strengths Card -->
+                    <div class="border-l-4 border-accent-green bg-emerald-50/50 p-6 rounded-r-xl border-y border-r border-slate-200 shadow-sm space-y-4">
+                        <div class="flex justify-between items-center">
+                            <h3 class="text-lg font-bold text-navy flex items-center gap-2">
+                                <i class="fa-solid fa-circle-check text-accent-green"></i> System Strengths
+                            </h3>
+                            <span class="text-xs font-mono font-bold bg-emerald-100 text-emerald-800 px-2.5 py-0.5 rounded">SCORE: 9.2/10</span>
+                        </div>
+                        <ul class="text-xs text-charcoal space-y-3">
+                            <li class="flex items-start gap-2.5">
+                                <i class="fa-solid fa-check text-accent-green mt-0.5"></i>
+                                <div>
+                                    <strong class="text-navy">High Hardware Compatibility:</strong> Algorithm integrates directly into existing OPC-UA and Modbus protocols without requiring full capital equipment replacement.
+                                </div>
+                            </li>
+                            <li class="flex items-start gap-2.5">
+                                <i class="fa-solid fa-check text-accent-green mt-0.5"></i>
+                                <div>
+                                    <strong class="text-navy">Sub-15ms AI Latency:</strong> Lightweight Edge AI visual inference models run real-time defect scoring directly on local GPU frames.
+                                </div>
+                            </li>
+                            <li class="flex items-start gap-2.5">
+                                <i class="fa-solid fa-check text-accent-green mt-0.5"></i>
+                                <div>
+                                    <strong class="text-navy">Autonomous Auto-Tuning:</strong> Closed-loop feedback dynamically adjusts solder squeegee pressure micro-offsets without stopping the line.
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <!-- Weaknesses & Constraints Card -->
+                    <div class="border-l-4 border-accent-orange bg-orange-50/50 p-6 rounded-r-xl border-y border-r border-slate-200 shadow-sm space-y-4">
+                        <div class="flex justify-between items-center">
+                            <h3 class="text-lg font-bold text-navy flex items-center gap-2">
+                                <i class="fa-solid fa-triangle-exclamation text-accent-orange"></i> Operational Weaknesses & Risks
+                            </h3>
+                            <span class="text-xs font-mono font-bold bg-orange-100 text-orange-800 px-2.5 py-0.5 rounded">RISK: CONTROLLED</span>
+                        </div>
+                        <ul class="text-xs text-charcoal space-y-3">
+                            <li class="flex items-start gap-2.5">
+                                <i class="fa-solid fa-xmark text-accent-orange mt-0.5"></i>
+                                <div>
+                                    <strong class="text-navy">Initial Dataset Requirement:</strong> AI visual model requires ~5,000 labeled high-resolution defect images for initial model training calibration.
+                                </div>
+                            </li>
+                            <li class="flex items-start gap-2.5">
+                                <i class="fa-solid fa-xmark text-accent-orange mt-0.5"></i>
+                                <div>
+                                    <strong class="text-navy">Thermal Sensitivity to Ambient Drift:</strong> Extreme humidity spikes (&gt;65% RH) degrade solder viscosity predictability without strict HVAC control.
+                                </div>
+                            </li>
+                            <li class="flex items-start gap-2.5">
+                                <i class="fa-solid fa-xmark text-accent-orange mt-0.5"></i>
+                                <div>
+                                    <strong class="text-navy">High Initial Calibration Effort:</strong> Takes ~12 hours of setup per new PCB product layout variant.
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="bg-slate-100 p-3.5 rounded-xl border border-slate-200 flex justify-between items-center text-xs">
+                    <span class="text-slate-600"><strong class="text-navy">Mitigation Protocol:</strong> Synthetic GAN image generation deployed to eliminate initial training data paucity.</span>
+                    <span class="font-mono text-accent-green font-bold bg-white px-2.5 py-1 rounded border">Risk Rating: Low</span>
+                </div>
+            </div>
+
+            <!-- SLIDE 6: METHODOLOGY & INTERACTIVE STEP SLIDER (SPECIAL FEATURE) -->
+            <div id="slide-6" class="slide-pane w-full h-full p-6 sm:p-10 flex-col justify-between bg-white">
+                <div>
+                    <div class="flex items-center justify-between mb-1">
+                        <div class="flex items-center gap-3">
+                            <span class="h-3 w-3 bg-navy rounded-full"></span>
+                            <span class="text-xs font-bold text-ice uppercase tracking-widest font-mono">Section 05 // Interactive Methodology</span>
+                        </div>
+                        <span class="text-xs font-mono text-accent-orange bg-orange-50 px-2.5 py-1 rounded border border-orange-200">
+                            <i class="fa-solid fa-sliders mr-1"></i> Interactive Step Slider Active
+                        </span>
+                    </div>
+                    <h2 class="text-3xl font-black font-heading text-navy mb-1">6. Methodology & Process Flowchart</h2>
+                    <p class="text-sm text-charcoal">Click or slide through the process phases below to observe signal progression along the SVG pipeline path.</p>
+                </div>
+
+                <!-- SVG FLOW PIPELINE TRACK WITH ANIMATED TRAVELING CIRCLE -->
+                <div class="bg-navy-dark p-4 rounded-xl border border-navy-light shadow-md relative overflow-hidden my-2">
+                    <div class="flex justify-between text-[11px] font-mono text-ice-light mb-2">
+                        <span>SMT ASSEMBLY PIPELINE SIMULATOR</span>
+                        <span id="substep-phase-label" class="text-accent-yellow font-bold">PHASE 1 / 5</span>
+                    </div>
+
+                    <svg viewBox="0 0 700 70" class="w-full h-auto">
+                        <!-- Main Path Track -->
+                        <path id="pipelineTrack" d="M 50 35 L 200 35 L 350 35 L 500 35 L 650 35" fill="none" stroke="#183861" stroke-width="4"/>
+                        <!-- Flowing Dash Line -->
+                        <path d="M 50 35 L 200 35 L 350 35 L 500 35 L 650 35" fill="none" stroke="#4A698C" stroke-width="2" class="flowing-dash"/>
+
+                        <!-- Step 1 Node -->
+                        <circle cx="50" cy="35" r="14" fill="#0D2340" stroke="#10B981" stroke-width="3" class="cursor-pointer" onclick="setSubstep(0)"/>
+                        <text x="45" y="39" fill="#FFF" font-size="10" font-weight="bold" font-family="sans-serif">P1</text>
+
+                        <!-- Step 2 Node -->
+                        <circle cx="200" cy="35" r="14" fill="#0D2340" stroke="#4A698C" stroke-width="3" class="cursor-pointer" onclick="setSubstep(1)"/>
+                        <text x="195" y="39" fill="#FFF" font-size="10" font-weight="bold" font-family="sans-serif">P2</text>
+
+                        <!-- Step 3 Node -->
+                        <circle cx="350" cy="35" r="14" fill="#0D2340" stroke="#4A698C" stroke-width="3" class="cursor-pointer" onclick="setSubstep(2)"/>
+                        <text x="345" y="39" fill="#FFF" font-size="10" font-weight="bold" font-family="sans-serif">P3</text>
+
+                        <!-- Step 4 Node -->
+                        <circle cx="500" cy="35" r="14" fill="#0D2340" stroke="#4A698C" stroke-width="3" class="cursor-pointer" onclick="setSubstep(3)"/>
+                        <text x="495" y="39" fill="#FFF" font-size="10" font-weight="bold" font-family="sans-serif">P4</text>
+
+                        <!-- Step 5 Node -->
+                        <circle cx="650" cy="35" r="14" fill="#0D2340" stroke="#4A698C" stroke-width="3" class="cursor-pointer" onclick="setSubstep(4)"/>
+                        <text x="645" y="39" fill="#FFF" font-size="10" font-weight="bold" font-family="sans-serif">P5</text>
+
+                        <!-- Continuous Glowing Circle Traveling Along Path -->
+                        <circle r="6" fill="#10B981" class="laser-pulse">
+                            <animateMotion dur="6s" repeatCount="indefinite" path="M 50 35 L 200 35 L 350 35 L 500 35 L 650 35"/>
+                        </circle>
+
+                        <!-- Active Step Position Indicator Circle Ring -->
+                        <circle id="stepTrackerCircle" cx="50" cy="35" r="18" fill="none" stroke="#F59E0B" stroke-width="3" style="transition: cx 0.4s ease;"/>
+                    </svg>
+
+                    <!-- Sub-step Switcher Button Row -->
+                    <div class="grid grid-cols-5 gap-2 mt-2">
+                        <button onclick="setSubstep(0)" id="subtab-0" class="py-1.5 px-2 rounded text-[11px] font-mono font-bold transition bg-accent-orange text-navy">1. Solder Printing</button>
+                        <button onclick="setSubstep(1)" id="subtab-1" class="py-1.5 px-2 rounded text-[11px] font-mono font-bold transition bg-navy-light text-ice-light hover:bg-ice">2. Pick & Place</button>
+                        <button onclick="setSubstep(2)" id="subtab-2" class="py-1.5 px-2 rounded text-[11px] font-mono font-bold transition bg-navy-light text-ice-light hover:bg-ice">3. Reflow Oven</button>
+                        <button onclick="setSubstep(3)" id="subtab-3" class="py-1.5 px-2 rounded text-[11px] font-mono font-bold transition bg-navy-light text-ice-light hover:bg-ice">4. 3D AOI AI</button>
+                        <button onclick="setSubstep(4)" id="subtab-4" class="py-1.5 px-2 rounded text-[11px] font-mono font-bold transition bg-navy-light text-ice-light hover:bg-ice">5. Auto Feedback</button>
+                    </div>
+                </div>
+
+                <!-- SUB-STEP CAROUSEL CONTENT PANES -->
+                <div class="min-h-[210px] bg-slate-50 border border-slate-200 rounded-xl p-5 relative shadow-inner">
+                    <!-- Substep Pane 1 -->
+                    <div id="substep-0" class="substep-pane active">
+                        <div class="flex justify-between items-start mb-2">
+                            <div>
+                                <span class="text-[10px] font-mono text-navy font-bold bg-blue-100 px-2 py-0.5 rounded">METHODOLOGY STEP 01</span>
+                                <h3 class="text-xl font-bold font-heading text-navy mt-1">Solder Paste Printing & 3D SPI Inspection Integration</h3>
+                            </div>
+                            <span class="text-xs font-mono bg-navy text-white px-3 py-1 rounded">Cycle Time: 4.1s</span>
+                        </div>
+                        <p class="text-xs text-charcoal leading-relaxed mb-4">
+                            Solder paste is applied via dual-squeegee printing. The integrated 3D SPI system inspects volumetric deposition height across all SMT pads using structured laser projection.
+                        </p>
+                        <div class="grid grid-cols-3 gap-3 text-xs border-t border-slate-200 pt-3 font-mono">
+                            <div class="bg-white p-2.5 rounded border"><span class="text-slate-500 block text-[10px]">Target Volume:</span> <strong class="text-navy">100% ±10%</strong></div>
+                            <div class="bg-white p-2.5 rounded border"><span class="text-slate-500 block text-[10px]">Feedback Trigger:</span> <strong class="text-accent-green">Auto Stencil Wipe</strong></div>
+                            <div class="bg-white p-2.5 rounded border"><span class="text-slate-500 block text-[10px]">FPY Contribution:</span> <strong class="text-accent-orange">+2.4% Recovery</strong></div>
+                        </div>
+                    </div>
+
+                    <!-- Substep Pane 2 -->
+                    <div id="substep-1" class="substep-pane">
+                        <div class="flex justify-between items-start mb-2">
+                            <div>
+                                <span class="text-[10px] font-mono text-navy font-bold bg-blue-100 px-2 py-0.5 rounded">METHODOLOGY STEP 02</span>
+                                <h3 class="text-xl font-bold font-heading text-navy mt-1">High-Speed Pick & Place Nozzle Trajectory Optimization</h3>
+                            </div>
+                            <span class="text-xs font-mono bg-navy text-white px-3 py-1 rounded">Cycle Time: 3.2s</span>
+                        </div>
+                        <p class="text-xs text-charcoal leading-relaxed mb-4">
+                            Multi-vision camera array inspects 0201 micro-SMD component alignment prior to placement. Bezier-curve kinetic trajectory minimizes mechanical head vibration.
+                        </p>
+                        <div class="grid grid-cols-3 gap-3 text-xs border-t border-slate-200 pt-3 font-mono">
+                            <div class="bg-white p-2.5 rounded border"><span class="text-slate-500 block text-[10px]">Placement Tolerance:</span> <strong class="text-navy">±15 microns</strong></div>
+                            <div class="bg-white p-2.5 rounded border"><span class="text-slate-500 block text-[10px]">Sensor Monitoring:</span> <strong class="text-accent-green">Vacuum Pressure</strong></div>
+                            <div class="bg-white p-2.5 rounded border"><span class="text-slate-500 block text-[10px]">Speed Gain:</span> <strong class="text-accent-orange">+18% Head Velocity</strong></div>
+                        </div>
+                    </div>
+
+                    <!-- Substep Pane 3 -->
+                    <div id="substep-2" class="substep-pane">
+                        <div class="flex justify-between items-start mb-2">
+                            <div>
+                                <span class="text-[10px] font-mono text-navy font-bold bg-blue-100 px-2 py-0.5 rounded">METHODOLOGY STEP 03</span>
+                                <h3 class="text-xl font-bold font-heading text-navy mt-1">10-Zone Reflow Furnace Thermal Profiling</h3>
+                            </div>
+                            <span class="text-xs font-mono bg-navy text-white px-3 py-1 rounded">Cycle Time: 4.5s</span>
+                        </div>
+                        <p class="text-xs text-charcoal leading-relaxed mb-4">
+                            Nitrogen-purged 10-zone reflow oven maintains peak liquidus temperature (TAL) above 217°C for exactly 60 seconds, eliminating void formation and thermal shock.
+                        </p>
+                        <div class="grid grid-cols-3 gap-3 text-xs border-t border-slate-200 pt-3 font-mono">
+                            <div class="bg-white p-2.5 rounded border"><span class="text-slate-500 block text-[10px]">Peak Thermal Profile:</span> <strong class="text-navy">248°C ±2.5°C</strong></div>
+                            <div class="bg-white p-2.5 rounded border"><span class="text-slate-500 block text-[10px]">Atmosphere Control:</span> <strong class="text-accent-green">N2 Inert Purge</strong></div>
+                            <div class="bg-white p-2.5 rounded border"><span class="text-slate-500 block text-[10px]">Void Reduction:</span> <strong class="text-accent-orange">Down to 2.1%</strong></div>
+                        </div>
+                    </div>
+
+                    <!-- Substep Pane 4 -->
+                    <div id="substep-3" class="substep-pane">
+                        <div class="flex justify-between items-start mb-2">
+                            <div>
+                                <span class="text-[10px] font-mono text-navy font-bold bg-blue-100 px-2 py-0.5 rounded">METHODOLOGY STEP 04</span>
+                                <h3 class="text-xl font-bold font-heading text-navy mt-1">3D AOI Deep Learning Visual Defect Classification</h3>
+                            </div>
+                            <span class="text-xs font-mono bg-navy text-white px-3 py-1 rounded">Cycle Time: 1.8s</span>
+                        </div>
+                        <p class="text-xs text-charcoal leading-relaxed mb-4">
+                            Multi-angle RGB LED projectors capture solder fillet geometry. Edge AI neural network classifies tombstoning, bridging, and misalignments in sub-15ms inference.
+                        </p>
+                        <div class="grid grid-cols-3 gap-3 text-xs border-t border-slate-200 pt-3 font-mono">
+                            <div class="bg-white p-2.5 rounded border"><span class="text-slate-500 block text-[10px]">Inference Latency:</span> <strong class="text-navy">11.4 ms</strong></div>
+                            <div class="bg-white p-2.5 rounded border"><span class="text-slate-500 block text-[10px]">Detection Accuracy:</span> <strong class="text-accent-green">99.8% Precision</strong></div>
+                            <div class="bg-white p-2.5 rounded border"><span class="text-slate-500 block text-[10px]">False Alarm Rate:</span> <strong class="text-accent-orange">&lt; 0.05%</strong></div>
+                        </div>
+                    </div>
+
+                    <!-- Substep Pane 5 -->
+                    <div id="substep-4" class="substep-pane">
+                        <div class="flex justify-between items-start mb-2">
+                            <div>
+                                <span class="text-[10px] font-mono text-navy font-bold bg-blue-100 px-2 py-0.5 rounded">METHODOLOGY STEP 05</span>
+                                <h3 class="text-xl font-bold font-heading text-navy mt-1">Closed-Loop OPC-UA Auto-Tuning Feedback Loop</h3>
+                            </div>
+                            <span class="text-xs font-mono bg-navy text-white px-3 py-1 rounded">Cycle Time: Sub-second</span>
+                        </div>
+                        <p class="text-xs text-charcoal leading-relaxed mb-4">
+                            Inspection metrics logged at SPI and AOI dynamically feed micro-offset corrections back into upstream stencil printers and pick heads via standard OPC-UA protocol.
+                        </p>
+                        <div class="grid grid-cols-3 gap-3 text-xs border-t border-slate-200 pt-3 font-mono">
+                            <div class="bg-white p-2.5 rounded border"><span class="text-slate-500 block text-[10px]">Protocol Standard:</span> <strong class="text-navy">OPC-UA / MQTT</strong></div>
+                            <div class="bg-white p-2.5 rounded border"><span class="text-slate-500 block text-[10px]">Control Action:</span> <strong class="text-accent-green">Auto-Fine Tuning</strong></div>
+                            <div class="bg-white p-2.5 rounded border"><span class="text-slate-500 block text-[10px]">Total Line Speedup:</span> <strong class="text-accent-orange">1.48x Throughput</strong></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step Sub-slider Control Footer -->
+                <div class="flex justify-between items-center text-xs text-slate-500 pt-1">
+                    <button onclick="prevSubstep()" class="px-3 py-1 bg-slate-100 hover:bg-slate-200 text-navy font-bold rounded transition flex items-center gap-1">
+                        <i class="fa-solid fa-chevron-left"></i> Previous Phase
+                    </button>
+                    <span class="font-mono text-navy">Use Controls Above to Slide Through Methodology Steps</span>
+                    <button onclick="nextSubstep()" class="px-3 py-1 bg-navy hover:bg-navy-light text-white font-bold rounded transition flex items-center gap-1">
+                        Next Phase <i class="fa-solid fa-chevron-right"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- SLIDE 7: ISHIKAWA FISHBONE DIAGRAM -->
+            <div id="slide-7" class="slide-pane w-full h-full p-6 sm:p-10 flex-col justify-between bg-white">
+                <div>
+                    <div class="flex items-center gap-3 mb-1">
+                        <span class="h-3 w-3 bg-navy rounded-full"></span>
+                        <span class="text-xs font-bold text-ice uppercase tracking-widest font-mono">Section 06 // Root Cause Analysis</span>
+                    </div>
+                    <h2 class="text-3xl font-black font-heading text-navy mb-1">7. Ishikawa Fishbone Diagram</h2>
+                    <p class="text-sm text-charcoal">Cause and Effect analysis mapping operational inputs to line quality output.</p>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 my-auto items-center">
+                    <!-- SVG Fishbone with Animated Flowing Dots Along Rib Paths -->
+                    <div class="lg:col-span-8 bg-slate-50 border border-slate-200 rounded-xl p-4 shadow-sm">
+                        <div class="flex justify-between items-center mb-1 text-xs font-mono">
+                            <span class="font-bold text-navy">CAUSE & EFFECT FISHBONE MATRIX</span>
+                            <span class="text-slate-500">Flowing signals indicate cause vectors</span>
+                        </div>
+                        <svg viewBox="0 0 520 230" class="w-full h-auto">
+                            <!-- Main Spine Path -->
+                            <path id="fishboneSpine" d="M 20 115 L 430 115" stroke="#0D2340" stroke-width="4" fill="none"/>
+                            <polygon points="430,102 475,115 430,128" fill="#0D2340"/>
+                            <text x="435" y="119" fill="#FFF" font-size="9" font-weight="bold" font-family="sans-serif">TARGET</text>
+
+                            <!-- Upper Rib 1: MACHINE -->
+                            <line x1="90" y1="115" x2="160" y2="35" stroke="#4A698C" stroke-width="2.5"/>
+                            <rect x="130" y="15" width="70" height="20" rx="4" fill="#0D2340"/>
+                            <text x="142" y="28" fill="#FFF" font-size="9" font-weight="bold">MACHINE</text>
+
+                            <!-- Upper Rib 2: METHOD -->
+                            <line x1="240" y1="115" x2="310" y2="35" stroke="#4A698C" stroke-width="2.5"/>
+                            <rect x="280" y="15" width="70" height="20" rx="4" fill="#0D2340"/>
+                            <text x="293" y="28" fill="#FFF" font-size="9" font-weight="bold">METHOD</text>
+
+                            <!-- Lower Rib 1: MATERIAL -->
+                            <line x1="120" y1="115" x2="190" y2="195" stroke="#F97316" stroke-width="2.5"/>
+                            <rect x="160" y="195" width="75" height="20" rx="4" fill="#F97316"/>
+                            <text x="171" y="208" fill="#FFF" font-size="9" font-weight="bold">MATERIAL</text>
+
+                            <!-- Lower Rib 2: ENVIRONMENT -->
+                            <line x1="270" y1="115" x2="340" y2="195" stroke="#F97316" stroke-width="2.5"/>
+                            <rect x="305" y="195" width="85" height="20" rx="4" fill="#F97316"/>
+                            <text x="313" y="208" fill="#FFF" font-size="9" font-weight="bold">ENVIRON.</text>
+
+                            <!-- Node Indicators -->
+                            <circle cx="135" cy="65" r="4" fill="#10B981"/>
+                            <text x="65" y="68" fill="#333" font-size="8">AI Nozzle Sensor</text>
+
+                            <circle cx="285" cy="65" r="4" fill="#10B981"/>
+                            <text x="225" y="68" fill="#333" font-size="8">VSM Flow</text>
+
+                            <circle cx="165" cy="165" r="4" fill="#F59E0B"/>
+                            <text x="95" y="168" fill="#333" font-size="8">SAC305 Alloy</text>
+
+                            <circle cx="315" cy="165" r="4" fill="#F59E0B"/>
+                            <text x="245" y="168" fill="#333" font-size="8">45% RH Climate</text>
+
+                            <!-- Animated Glowing Circle Traveling Main Spine -->
+                            <circle r="5" fill="#10B981" class="laser-pulse">
+                                <animateMotion dur="3s" repeatCount="indefinite" path="M 20 115 L 430 115"/>
+                            </circle>
+                        </svg>
+                    </div>
+
+                    <!-- Right Side Breakdown Card -->
+                    <div class="lg:col-span-4 space-y-4">
+                        <div class="bg-navy p-4 rounded-xl text-white space-y-2">
+                            <span class="text-[10px] font-mono text-accent-yellow border border-accent-yellow/40 px-2 py-0.5 rounded">PRIMARY CAUSE VECTOR</span>
+                            <h3 class="text-base font-bold font-heading">Solder Paste Viscosity Shift</h3>
+                            <p class="text-xs text-ice-muted leading-relaxed">
+                                Uncontrolled ambient RH fluctuations cause solder paste rheology shifts, triggering micro-bridging during reflow soak.
+                            </p>
+                        </div>
+
+                        <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 text-xs space-y-2">
+                            <div class="font-bold text-navy flex items-center justify-between">
+                                <span>Corrective Engineering Protocol</span>
+                                <i class="fa-solid fa-wrench text-accent-orange"></i>
+                            </div>
+                            <p class="text-slate-600 leading-relaxed">
+                                HVAC RH sensors tied directly to solder printer climate alarm thresholds.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-navy-dark text-ice-light p-3 rounded-xl flex justify-between items-center text-xs font-mono">
+                    <span>ROOT CAUSE MITIGATION VERIFIED</span>
+                    <span class="text-accent-green">Defect Reduction Potential: -88%</span>
+                </div>
+            </div>
+
+            <!-- SLIDE 8: TECHNICAL CHARTS -->
+            <div id="slide-8" class="slide-pane w-full h-full p-6 sm:p-10 flex-col justify-between bg-white">
+                <div>
+                    <div class="flex items-center justify-between mb-1">
+                        <div class="flex items-center gap-3">
+                            <span class="h-3 w-3 bg-navy rounded-full"></span>
+                            <span class="text-xs font-bold text-ice uppercase tracking-widest font-mono">Section 07 // Quantitative Data</span>
+                        </div>
+                        <div class="flex gap-2">
+                            <button onclick="toggleChartDataset('ppm')" id="chart-btn-ppm" class="px-3 py-1 bg-navy text-white text-xs font-mono font-bold rounded shadow">PPM Trajectory</button>
+                            <button onclick="toggleChartDataset('oee')" id="chart-btn-oee" class="px-3 py-1 bg-slate-100 text-slate-600 text-xs font-mono font-bold rounded hover:bg-slate-200">OEE Growth</button>
+                        </div>
+                    </div>
+                    <h2 class="text-3xl font-black font-heading text-navy mb-1">8. Technical Data Charts & Visual Analytics</h2>
+                    <p class="text-sm text-charcoal">Empirical defect rate trajectories and efficiency metrics across 8 test production batches.</p>
+                </div>
+
+                <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 shadow-sm my-auto">
+                    <div class="h-64 relative">
+                        <canvas id="mainChart"></canvas>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-3 gap-4 text-xs font-mono">
+                    <div class="bg-navy p-3 rounded-lg text-white text-center">
+                        <span class="text-[10px] text-slate-400 block">Baseline PPM</span>
+                        <span class="text-xl font-bold text-accent-orange">1,250 PPM</span>
+                    </div>
+                    <div class="bg-navy p-3 rounded-lg text-white text-center">
+                        <span class="text-[10px] text-slate-400 block">Optimized Target</span>
+                        <span class="text-xl font-bold text-accent-green">140 PPM</span>
+                    </div>
+                    <div class="bg-navy p-3 rounded-lg text-white text-center">
+                        <span class="text-[10px] text-slate-400 block">Statistical Significance</span>
+                        <span class="text-xl font-bold text-accent-yellow">p &lt; 0.001</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SLIDE 9: STRUCTURED DATA TABLE -->
+            <div id="slide-9" class="slide-pane w-full h-full p-6 sm:p-10 flex-col justify-between bg-white">
+                <div>
+                    <div class="flex items-center gap-3 mb-1">
+                        <span class="h-3 w-3 bg-navy rounded-full"></span>
+                        <span class="text-xs font-bold text-ice uppercase tracking-widest font-mono">Section 08 // Technical Telemetry</span>
+                    </div>
+                    <h2 class="text-3xl font-black font-heading text-navy mb-1">9. Industrial Telemetry & Empirical Results Table</h2>
+                    <p class="text-sm text-charcoal">Comprehensive comparative analysis of baseline legacy line vs. AI-VSM optimized assembly line.</p>
+                </div>
+
+                <div class="overflow-x-auto my-auto rounded-xl border border-slate-200 shadow-sm">
+                    <table class="w-full text-left text-xs border-collapse font-mono">
+                        <thead>
+                            <tr class="bg-navy text-white text-sm">
+                                <th class="p-3.5">Engineering Metric</th>
+                                <th class="p-3.5">Baseline Line</th>
+                                <th class="p-3.5">AI-VSM Line</th>
+                                <th class="p-3.5">Variance / Delta</th>
+                                <th class="p-3.5">ANOVA Significance</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-200 bg-white text-charcoal">
+                            <tr class="hover:bg-slate-50">
+                                <td class="p-3.5 font-bold text-navy">First Pass Yield (FPY)</td>
+                                <td class="p-3.5">91.2%</td>
+                                <td class="p-3.5 text-accent-green font-bold">98.5%</td>
+                                <td class="p-3.5 text-emerald-600 font-bold">+7.3%</td>
+                                <td class="p-3.5 text-slate-500">p &lt; 0.001 (Significant)</td>
+                            </tr>
+                            <tr class="hover:bg-slate-50">
+                                <td class="p-3.5 font-bold text-navy">Cycle Takt Time</td>
+                                <td class="p-3.5">21.8 s</td>
+                                <td class="p-3.5 text-accent-green font-bold">14.2 s</td>
+                                <td class="p-3.5 text-emerald-600 font-bold">-34.8%</td>
+                                <td class="p-3.5 text-slate-500">p &lt; 0.001 (Significant)</td>
+                            </tr>
+                            <tr class="hover:bg-slate-50">
+                                <td class="p-3.5 font-bold text-navy">Solder Joint Voiding Rate</td>
+                                <td class="p-3.5">8.4%</td>
+                                <td class="p-3.5 text-accent-green font-bold">2.1%</td>
+                                <td class="p-3.5 text-emerald-600 font-bold">-75.0%</td>
+                                <td class="p-3.5 text-slate-500">p &lt; 0.005 (Significant)</td>
+                            </tr>
+                            <tr class="hover:bg-slate-50">
+                                <td class="p-3.5 font-bold text-navy">Mean Time Between Failures (MTBF)</td>
+                                <td class="p-3.5">142 hrs</td>
+                                <td class="p-3.5 text-accent-green font-bold">380 hrs</td>
+                                <td class="p-3.5 text-emerald-600 font-bold">+167.6%</td>
+                                <td class="p-3.5 text-slate-500">p &lt; 0.001 (Significant)</td>
+                            </tr>
+                            <tr class="hover:bg-slate-50">
+                                <td class="p-3.5 font-bold text-navy">Overall Equipment Efficiency (OEE)</td>
+                                <td class="p-3.5">64.2%</td>
+                                <td class="p-3.5 text-accent-green font-bold">89.0%</td>
+                                <td class="p-3.5 text-emerald-600 font-bold">+24.8%</td>
+                                <td class="p-3.5 text-slate-500">p &lt; 0.001 (Significant)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="bg-navy-dark text-white p-3.5 rounded-xl flex justify-between items-center text-xs font-mono">
+                    <span>STATISTICAL PROTOCOL: Minitab 21 ANOVA Test</span>
+                    <span class="text-accent-yellow">Sample Size: N = 12,000 PCB Units</span>
+                </div>
+            </div>
+
+            <!-- SLIDE 10: KEY CONCLUSIONS & KPIS -->
+            <div id="slide-10" class="slide-pane w-full h-full p-6 sm:p-10 flex-col justify-between bg-white">
+                <div>
+                    <div class="flex items-center gap-3 mb-1">
+                        <span class="h-3 w-3 bg-navy rounded-full"></span>
+                        <span class="text-xs font-bold text-ice uppercase tracking-widest font-mono">Section 09 // Synthesis</span>
+                    </div>
+                    <h2 class="text-3xl font-black font-heading text-navy mb-1">10. Key Conclusions & Performance KPIs</h2>
+                    <p class="text-sm text-charcoal">Summary of primary research outcomes and verified industrial throughput enhancements.</p>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-6 my-auto">
+                    <!-- KPI Card 1 -->
+                    <div class="bg-gradient-to-br from-navy to-navy-dark text-white p-6 rounded-xl border border-navy-light shadow-md flex flex-col justify-between">
+                        <div class="text-xs font-mono text-ice-light uppercase">Overall Equipment Efficiency</div>
+                        <div class="my-4">
+                            <span class="text-5xl font-black font-heading text-accent-green">+24.8%</span>
+                            <span class="block text-xs text-slate-300 mt-1">OEE Elevated from 64.2% to 89.0%</span>
+                        </div>
+                        <div class="text-[11px] text-slate-400 border-t border-navy-light pt-2">
+                            World-class lean manufacturing standard achieved.
+                        </div>
+                    </div>
+
+                    <!-- KPI Card 2 -->
+                    <div class="bg-gradient-to-br from-navy to-navy-dark text-white p-6 rounded-xl border border-navy-light shadow-md flex flex-col justify-between">
+                        <div class="text-xs font-mono text-ice-light uppercase">Defect Cost Avoidance</div>
+                        <div class="my-4">
+                            <span class="text-5xl font-black font-heading text-accent-orange">-41.5%</span>
+                            <span class="block text-xs text-slate-300 mt-1">Scrap Rate Reduced to 0.42%</span>
+                        </div>
+                        <div class="text-[11px] text-slate-400 border-t border-navy-light pt-2">
+                            Calculated annual scrap reduction worth $184k.
+                        </div>
+                    </div>
+
+                    <!-- KPI Card 3 -->
+                    <div class="bg-gradient-to-br from-navy to-navy-dark text-white p-6 rounded-xl border border-navy-light shadow-md flex flex-col justify-between">
+                        <div class="text-xs font-mono text-ice-light uppercase">Throughput Rate</div>
+                        <div class="my-4">
+                            <span class="text-5xl font-black font-heading text-accent-yellow">254 UPH</span>
+                            <span class="block text-xs text-slate-300 mt-1">Units per Hour Output</span>
+                        </div>
+                        <div class="text-[11px] text-slate-400 border-t border-navy-light pt-2">
+                            Increased from 165 UPH baseline speed.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-slate-50 border-l-4 border-navy p-4 rounded-r-xl text-xs space-y-1">
+                    <h3 class="font-bold text-navy">Final Engineering Takeaway</h3>
+                    <p class="text-slate-600 leading-relaxed">
+                        The integration of closed-loop Edge AI visual inspection with Lean Value Stream Mapping (VSM) provides a reproducible blueprint for high-mix low-volume electronic manufacturing.
+                    </p>
+                </div>
+            </div>
+
+            <!-- SLIDE 11: RECOMMENDATIONS & ROADMAP -->
+            <div id="slide-11" class="slide-pane w-full h-full p-6 sm:p-10 flex-col justify-between bg-white">
+                <div>
+                    <div class="flex items-center gap-3 mb-1">
+                        <span class="h-3 w-3 bg-navy rounded-full"></span>
+                        <span class="text-xs font-bold text-ice uppercase tracking-widest font-mono">Section 10 // Future Roadmap</span>
+                    </div>
+                    <h2 class="text-3xl font-black font-heading text-navy mb-1">11. Engineering Recommendations & Scalability</h2>
+                    <p class="text-sm text-charcoal">Strategic deployment steps for multi-factory scaling over the next 12-24 months.</p>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-4 gap-4 my-auto relative">
+                    <!-- Phase 1 -->
+                    <div class="bg-slate-50 border border-slate-200 p-5 rounded-xl shadow-sm relative">
+                        <div class="w-8 h-8 bg-navy text-white font-bold font-mono rounded-lg flex items-center justify-center text-xs mb-3">Q1</div>
+                        <h3 class="font-bold text-navy text-sm mb-1">Phase 1: Standardization</h3>
+                        <p class="text-xs text-slate-600 leading-relaxed">Standardize OPC-UA data schemas across all line feeder modules.</p>
+                    </div>
+
+                    <!-- Phase 2 -->
+                    <div class="bg-slate-50 border border-slate-200 p-5 rounded-xl shadow-sm relative">
+                        <div class="w-8 h-8 bg-ice text-white font-bold font-mono rounded-lg flex items-center justify-center text-xs mb-3">Q2</div>
+                        <h3 class="font-bold text-navy text-sm mb-1">Phase 2: Cloud Sync</h3>
+                        <p class="text-xs text-slate-600 leading-relaxed">Federated Learning deployment across multi-plant Edge AI instances.</p>
+                    </div>
+
+                    <!-- Phase 3 -->
+                    <div class="bg-slate-50 border border-slate-200 p-5 rounded-xl shadow-sm relative">
+                        <div class="w-8 h-8 bg-accent-orange text-navy font-bold font-mono rounded-lg flex items-center justify-center text-xs mb-3">Q3</div>
+                        <h3 class="font-bold text-navy text-sm mb-1">Phase 3: Autonomous Twin</h3>
+                        <p class="text-xs text-slate-600 leading-relaxed">Deploy real-time Digital Twin simulation for predictive thermal profiling.</p>
+                    </div>
+
+                    <!-- Phase 4 -->
+                    <div class="bg-slate-50 border border-slate-200 p-5 rounded-xl shadow-sm relative">
+                        <div class="w-8 h-8 bg-accent-green text-white font-bold font-mono rounded-lg flex items-center justify-center text-xs mb-3">Q4</div>
+                        <h3 class="font-bold text-navy text-sm mb-1">Phase 4: Full Autonomy</h3>
+                        <p class="text-xs text-slate-600 leading-relaxed">Lights-out automated material replenishment via Autonomous Mobile Robots (AMRs).</p>
+                    </div>
+                </div>
+
+                <div class="bg-navy p-3.5 rounded-xl text-white flex justify-between items-center text-xs font-mono">
+                    <span>ESTIMATED PAYBACK PERIOD: 4.2 MONTHS</span>
+                    <span class="text-accent-yellow">ROI: 320% over 3 years</span>
+                </div>
+            </div>
+
+            <!-- SLIDE 12: CLOSING & Q&A -->
+            <div id="slide-12" class="slide-pane w-full h-full bg-navy text-white p-8 sm:p-16 flex-col justify-between relative overflow-hidden bg-grid-pattern">
+                <!-- Laser pulse graphics -->
+                <div class="absolute -right-20 -top-20 w-80 h-80 bg-ice/10 rounded-full blur-3xl pointer-events-none"></div>
+                <div class="absolute -left-20 -bottom-20 w-80 h-80 bg-accent-orange/10 rounded-full blur-3xl pointer-events-none"></div>
+
+                <div class="relative z-10 flex justify-between items-center border-b border-navy-light/60 pb-6">
+                    <div class="flex items-center gap-3">
+                        <span class="h-3 w-3 bg-accent-orange rounded-full animate-ping"></span>
+                        <span class="text-xs font-mono tracking-widest text-ice-light uppercase">Presentation Concluded</span>
+                    </div>
+                    <span class="text-xs font-mono text-slate-400">RESEARCH DECK ID: ENG-2026-SMT</span>
+                </div>
+
+                <!-- Main Bold Closing Text -->
+                <div class="my-auto text-center relative z-10 py-8">
+                    <h1 class="text-6xl sm:text-7xl lg:text-8xl font-black font-heading tracking-tight text-white mb-4">
+                        THANK YOU
+                    </h1>
+                    <p class="text-xl sm:text-2xl font-light text-accent-yellow max-w-2xl mx-auto mb-8 font-heading">
+                        Floor Open for Questions & Technical Inquiry
+                    </p>
+
+                    <div class="inline-flex items-center gap-3 bg-navy-light/90 border border-ice/40 px-6 py-3 rounded-full text-sm font-mono text-white shadow-xl">
+                        <i class="fa-solid fa-comments text-accent-green animate-bounce"></i>
+                        <span>Committee & Audience Q&A Session</span>
+                    </div>
+                </div>
+
+                <!-- Contact Panel -->
+                <div class="relative z-10 grid grid-cols-1 md:grid-cols-3 gap-4 border-t border-navy-light/60 pt-6 text-xs text-slate-300 font-mono">
+                    <div>
+                        <span class="block text-ice-light font-bold uppercase mb-1">Primary Email</span>
+                        <span>dr.mercer@automation-lab.org</span>
+                    </div>
+                    <div>
+                        <span class="block text-ice-light font-bold uppercase mb-1">Research Laboratory</span>
+                        <span>Advanced Industrial Systems & Robotics</span>
+                    </div>
+                    <div>
+                        <span class="block text-ice-light font-bold uppercase mb-1">Code Repository</span>
+                        <span>github.com/smt-vsm-ai-2026</span>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- FOOTER STATUS BAR -->
+    <footer class="bg-navy-dark text-ice-light h-10 px-4 md:px-8 flex items-center justify-between text-xs border-t border-navy-light shrink-0 z-50">
+        <div class="flex items-center space-x-4 font-mono">
+            <span class="flex items-center gap-1.5"><i class="fa-solid fa-keyboard text-accent-yellow"></i> Arrow Keys Active</span>
+            <span class="hidden md:inline text-slate-500">|</span>
+            <span class="hidden md:inline text-slate-400">Slide 6 Sub-steps Slider Active</span>
+        </div>
+        <div class="font-mono text-slate-400 text-[11px]">
+            Claude-Style Engineering Deck Standard v4.2
+        </div>
+    </footer>
+
+    <!-- SLIDE INDEX DRAWER MODAL -->
+    <div id="outline-modal" class="fixed inset-0 bg-black/75 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white text-navy w-full max-w-4xl rounded-2xl shadow-2xl p-6 border border-slate-300">
+            <div class="flex justify-between items-center mb-6 border-b pb-4">
+                <h3 class="text-xl font-bold font-heading text-navy flex items-center gap-2">
+                    <i class="fa-solid fa-list-squares text-ice"></i> 12-Slide Navigation Overview
+                </h3>
+                <button onclick="toggleOutlineModal()" class="text-slate-400 hover:text-navy text-lg p-1">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 max-h-[65vh] overflow-y-auto pr-2" id="outline-list">
+                <!-- Dynamically generated via JS -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const slides = [
+            { id: 'slide-1', title: '1. Cover: SMT Optimization' },
+            { id: 'slide-2', title: '2. Research Objectives' },
+            { id: 'slide-3', title: '3-5. Experimental Variables Matrix' },
+            { id: 'slide-4', title: '4. Significance & ECRS Framework' },
+            { id: 'slide-5', title: '5. Strengths & Weaknesses' },
+            { id: 'slide-6', title: '6. Methodology & Sub-step Flow' },
+            { id: 'slide-7', title: '7. Ishikawa Fishbone Diagram' },
+            { id: 'slide-8', title: '8. Technical Data Charts' },
+            { id: 'slide-9', title: '9. Industrial Data Table' },
+            { id: 'slide-10', title: '10. Key Conclusions & KPIs' },
+            { id: 'slide-11', title: '11. Recommendations & Roadmap' },
+            { id: 'slide-12', title: '12. Closing Slide & Q&A' }
+        ];
+
+        let currentSlideIndex = 0;
+        let currentSubstepIndex = 0;
+        let chartInstance = null;
+        let autoplayInterval = null;
+
+        function showSlide(index) {
+            if (index < 0 || index >= slides.length) return;
+            
+            // Hide all slides
+            document.querySelectorAll('.slide-pane').forEach(el => el.classList.remove('active'));
+            
+            currentSlideIndex = index;
+            const targetSlide = document.getElementById(slides[currentSlideIndex].id);
+            if (targetSlide) {
+                targetSlide.classList.add('active');
+            }
+
+            // Update Header Nav Info
+            document.getElementById('nav-slide-title').innerText = slides[currentSlideIndex].title;
+            document.getElementById('slide-number-label').innerText = 
+                `${String(currentSlideIndex + 1).padStart(2, '0')} / ${String(slides.length).padStart(2, '0')}`;
+            
+            // Update Progress Bar
+            const progressPct = ((currentSlideIndex + 1) / slides.length) * 100;
+            document.getElementById('progress-bar').style.width = `${progressPct}%`;
+
+            // Button state
+            document.getElementById('prev-btn').disabled = (currentSlideIndex === 0);
+            document.getElementById('next-btn').disabled = (currentSlideIndex === slides.length - 1);
+
+            // Lazy initialize Chart.js on Slide 8
+            if (currentSlideIndex === 7 && !chartInstance) {
+                initMainChart();
+            }
+        }
+
+        function nextSlide() {
+            if (currentSlideIndex < slides.length - 1) {
+                showSlide(currentSlideIndex + 1);
+            }
+        }
+
+        function prevSlide() {
+            if (currentSlideIndex > 0) {
+                showSlide(currentSlideIndex - 1);
+            }
+        }
+
+        const substepXPositions = [50, 200, 350, 500, 650];
+
+        function setSubstep(index) {
+            if (index < 0 || index > 4) return;
+            currentSubstepIndex = index;
+
+            // Hide all substep panes
+            document.querySelectorAll('.substep-pane').forEach(el => el.classList.remove('active'));
+            const target = document.getElementById(`substep-${currentSubstepIndex}`);
+            if (target) target.classList.add('active');
+
+            // Move animated circle indicator along SVG path
+            const circle = document.getElementById('stepTrackerCircle');
+            if (circle) circle.setAttribute('cx', substepXPositions[currentSubstepIndex]);
+
+            // Update sub-tab buttons style
+            for (let i = 0; i < 5; i++) {
+                const btn = document.getElementById(`subtab-${i}`);
+                if (btn) {
+                    if (i === currentSubstepIndex) {
+                        btn.className = 'py-1.5 px-2 rounded text-[11px] font-mono font-bold transition bg-accent-orange text-navy shadow';
+                    } else {
+                        btn.className = 'py-1.5 px-2 rounded text-[11px] font-mono font-bold transition bg-navy-light text-ice-light hover:bg-ice';
+                    }
+                }
+            }
+
+            // Update phase indicator label
+            const label = document.getElementById('substep-phase-label');
+            if (label) label.innerText = `PHASE ${currentSubstepIndex + 1} / 5`;
+        }
+
+        function nextSubstep() {
+            setSubstep((currentSubstepIndex + 1) % 5);
+        }
+
+        function prevSubstep() {
+            setSubstep((currentSubstepIndex - 1 + 5) % 5);
+        }
+
+        function initMainChart() {
+            const ctx = document.getElementById('mainChart').getContext('2d');
+            chartInstance = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ['Batch 1', 'Batch 2', 'Batch 3', 'Batch 4', 'Batch 5', 'Batch 6', 'Batch 7', 'Batch 8'],
+                    datasets: [
+                        {
+                            label: 'Baseline PPM Defect Density',
+                            data: [1250, 1180, 1310, 1200, 1280, 1150, 1220, 1190],
+                            borderColor: '#F97316',
+                            borderWidth: 2,
+                            borderDash: [5, 5],
+                            pointRadius: 4,
+                            fill: false,
+                        },
+                        {
+                            label: 'AI-VSM Line PPM Density',
+                            data: [1250, 840, 520, 310, 210, 180, 150, 140],
+                            borderColor: '#10B981',
+                            backgroundColor: 'rgba(16, 185, 129, 0.12)',
+                            borderWidth: 3,
+                            pointRadius: 6,
+                            pointBackgroundColor: '#10B981',
+                            fill: true,
+                            tension: 0.35
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                            labels: { font: { family: 'Inter', size: 11 }, color: '#333' }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            grid: { display: false },
+                            ticks: { font: { family: 'Courier New', size: 10 } }
+                        },
+                        y: {
+                            grid: { color: '#E2E8F0' },
+                            ticks: { font: { family: 'Courier New', size: 10 } },
+                            title: { display: true, text: 'Defects (PPM)', font: { size: 10 } }
+                        }
+                    }
+                }
+            });
+        }
+
+        function toggleChartDataset(type) {
+            if (!chartInstance) return;
+
+            const btnPpm = document.getElementById('chart-btn-ppm');
+            const btnOee = document.getElementById('chart-btn-oee');
+
+            if (type === 'ppm') {
+                btnPpm.className = 'px-3 py-1 bg-navy text-white text-xs font-mono font-bold rounded shadow';
+                btnOee.className = 'px-3 py-1 bg-slate-100 text-slate-600 text-xs font-mono font-bold rounded hover:bg-slate-200';
+                
+                chartInstance.data.datasets[0].label = 'Baseline PPM Defect Density';
+                chartInstance.data.datasets[0].data = [1250, 1180, 1310, 1200, 1280, 1150, 1220, 1190];
+                chartInstance.data.datasets[1].label = 'AI-VSM Line PPM Density';
+                chartInstance.data.datasets[1].data = [1250, 840, 520, 310, 210, 180, 150, 140];
+                chartInstance.options.scales.y.title.text = 'Defects (PPM)';
+            } else {
+                btnOee.className = 'px-3 py-1 bg-navy text-white text-xs font-mono font-bold rounded shadow';
+                btnPpm.className = 'px-3 py-1 bg-slate-100 text-slate-600 text-xs font-mono font-bold rounded hover:bg-slate-200';
+
+                chartInstance.data.datasets[0].label = 'Baseline OEE (%)';
+                chartInstance.data.datasets[0].data = [64, 63, 65, 64, 62, 65, 64, 64];
+                chartInstance.data.datasets[1].label = 'AI-VSM Line OEE Target (%)';
+                chartInstance.data.datasets[1].data = [64, 69, 74, 79, 83, 86, 88, 89];
+                chartInstance.options.scales.y.title.text = 'OEE Metric (%)';
+            }
+            chartInstance.update();
+        }
+
+        function toggleOutlineModal() {
+            const modal = document.getElementById('outline-modal');
+            if (modal.classList.contains('hidden')) {
+                const container = document.getElementById('outline-list');
+                container.innerHTML = slides.map((s, idx) => `
+                    <div onclick="jumpToSlide(${idx})" class="p-3 border rounded-xl hover:border-navy hover:bg-blue-50/50 cursor-pointer flex justify-between items-center ${idx === currentSlideIndex ? 'border-navy bg-blue-50 font-bold' : 'border-slate-200'}">
+                        <span class="text-xs text-navy font-medium">${s.title}</span>
+                        <span class="text-[10px] text-slate-400 font-mono">#${String(idx + 1).padStart(2, '0')}</span>
+                    </div>
+                `).join('');
+                modal.classList.remove('hidden');
+            } else {
+                modal.classList.add('hidden');
+            }
+        }
+
+        function jumpToSlide(index) {
+            showSlide(index);
+            toggleOutlineModal();
+        }
+
+        function toggleAutoplay() {
+            const btnText = document.getElementById('autoplay-text');
+            const btnIcon = document.getElementById('autoplay-icon');
+
+            if (autoplayInterval) {
+                clearInterval(autoplayInterval);
+                autoplayInterval = null;
+                btnText.innerText = 'Auto';
+                btnIcon.className = 'fa-solid fa-play';
+            } else {
+                autoplayInterval = setInterval(() => {
+                    if (currentSlideIndex === 5) {
+                        // On slide 6, cycle substeps first
+                        if (currentSubstepIndex < 4) {
+                            nextSubstep();
+                        } else {
+                            nextSlide();
+                        }
+                    } else if (currentSlideIndex < slides.length - 1) {
+                        nextSlide();
+                    } else {
+                        showSlide(0);
+                    }
+                }, 4000);
+                btnText.innerText = 'Stop';
+                btnIcon.className = 'fa-solid fa-pause';
+            }
+        }
+
+        function toggleFullscreen() {
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen().catch(err => {
+                    console.log(`Fullscreen error: ${err.message}`);
+                });
+            } else {
+                if (document.exitFullscreen) document.exitFullscreen();
+            }
+        }
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight' || e.key === 'Space') {
+                if (currentSlideIndex === 5 && currentSubstepIndex < 4) {
+                    nextSubstep();
+                } else {
+                    nextSlide();
+                }
+            } else if (e.key === 'ArrowLeft') {
+                if (currentSlideIndex === 5 && currentSubstepIndex > 0) {
+                    prevSubstep();
+                } else {
+                    prevSlide();
+                }
+            } else if (e.key === 'Escape') {
+                const modal = document.getElementById('outline-modal');
+                if (!modal.classList.contains('hidden')) modal.classList.add('hidden');
+            }
+        });
+
+        // Initialize presentation deck on page load
+        window.addEventListener('DOMContentLoaded', () => {
+            showSlide(0);
+            setSubstep(0);
+        });
+    </script>
+</body>
+</html>
