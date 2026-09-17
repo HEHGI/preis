@@ -1,17 +1,24 @@
 <!DOCTYPE html>
-<html lang="en" class="h-full scroll-smooth">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Engineering Research Deck | SMT Assembly Line AI Optimization</title>
-    
-    <!-- Google Fonts: Inter & Kanit -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Kanit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <title>Sparks of AGI: Early Experiments with GPT-4 - Research Presentation</title>
     
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts: Kanit and Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Kanit:wght@400;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Chart.js for data charts -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
     <script>
         tailwind.config = {
             theme: {
@@ -19,1325 +26,1014 @@
                     colors: {
                         navy: {
                             DEFAULT: '#0D2340',
-                            dark: '#081629',
-                            light: '#183861',
+                            dark: '#08172B',
+                            light: '#183860'
                         },
-                        ice: {
+                        steel: {
                             DEFAULT: '#4A698C',
-                            light: '#718EA6',
-                            muted: '#E2E8F0',
+                            light: '#8CA7C7',
+                            dark: '#2C4460'
                         },
-                        charcoal: '#222222',
                         accent: {
                             green: '#10B981',
-                            orange: '#F97316',
-                            yellow: '#F59E0B',
-                            red: '#EF4444',
+                            orange: '#F59E0B',
+                            yellow: '#EAB308',
                             cyan: '#06B6D4',
-                        }
+                            pink: '#EC4899'
+                        },
+                        darktext: '#333333'
                     },
                     fontFamily: {
-                        sans: ['Inter', 'sans-serif'],
-                        heading: ['Kanit', 'sans-serif'],
-                        mono: ['Courier New', 'monospace'],
+                        sans: ['Inter', 'Kanit', 'sans-serif'],
+                        title: ['Kanit', 'sans-serif']
                     }
                 }
             }
         }
     </script>
 
-    <!-- Chart.js for Data Visualizations -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <!-- FontAwesome Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
     <style>
         body {
-            font-family: 'Inter', sans-serif;
-            color: #222222;
-            background-color: #081629;
+            font-family: 'Inter', 'Kanit', sans-serif;
+            background-color: #F8FAFC;
+            color: #333333;
             overflow-x: hidden;
         }
 
-        h1, h2, h3, h4, .font-heading {
-            font-family: 'Kanit', sans-serif;
+        /* Trapezoid Cover Page Banner */
+        .trapezoid-bg {
+            clip-path: polygon(0 0, 100% 0, 82% 100%, 0% 100%);
         }
-
-        /* Large readable body text default for engineering deck */
-        .slide-body-text {
-            font-size: 1.125rem; /* 18px */
-            line-height: 1.6;
-            color: #222222;
-        }
-
-        /* Trapezoid Geometric Split for Cover */
-        .trapezoid-left {
-            clip-path: polygon(0 0, 100% 0, 88% 100%, 0 100%);
-        }
-        @media (max-width: 1024px) {
-            .trapezoid-left {
-                clip-path: none;
+        @media (max-width: 768px) {
+            .trapezoid-bg {
+                clip-path: polygon(0 0, 100% 0, 100% 90%, 0% 100%);
             }
         }
 
-        /* Triangle Masked Container for Slide 7 */
-        .triangle-mask {
-            clip-path: polygon(12% 0%, 100% 0%, 100% 100%, 0% 100%);
+        /* Masking containers for 60:40 layouts */
+        .mask-circle {
+            clip-path: circle(46% at 50% 50%);
         }
-        @media (max-width: 1024px) {
-            .triangle-mask {
-                clip-path: none;
-            }
+        .mask-triangle {
+            clip-path: polygon(50% 0%, 100% 100%, 0% 100%);
+        }
+        .mask-hexagon {
+            clip-path: polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%);
         }
 
-        /* Custom Scrollbars */
+        /* Animated Pulse along path for flowchart */
+        .animated-pulse-dot {
+            animation: moveDot 4s linear infinite;
+        }
+
+        @keyframes moveDot {
+            0% { offset-distance: 0%; }
+            100% { offset-distance: 100%; }
+        }
+
+        /* Anime Style Card Glow Effects */
+        .anime-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(74, 105, 140, 0.2);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .anime-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 24px -8px rgba(13, 35, 64, 0.15);
+            border-color: rgba(13, 35, 64, 0.5);
+        }
+
+        /* Slide Transitions */
+        .slide-content {
+            opacity: 0;
+            transform: translateY(15px);
+            transition: opacity 0.4s ease-out, transform 0.4s ease-out;
+            display: none;
+        }
+        .slide-content.active {
+            opacity: 1;
+            transform: translateY(0);
+            display: flex;
+        }
+
+        /* Grid Background Pattern */
+        .bg-grid-pattern {
+            background-size: 30px 30px;
+            background-image: 
+                linear-gradient(to right, rgba(13, 35, 64, 0.04) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(13, 35, 64, 0.04) 1px, transparent 1px);
+        }
+
+        /* Custom Scrollbars inside tables */
         ::-webkit-scrollbar {
             width: 6px;
             height: 6px;
         }
         ::-webkit-scrollbar-track {
-            background: #081629;
+            background: #f1f1f1;
         }
         ::-webkit-scrollbar-thumb {
             background: #4A698C;
             border-radius: 3px;
         }
-
-        /* Smooth Precision Slide Transitions */
-        .slide-pane {
-            display: none;
-            opacity: 0;
-            transform: translateY(24px) scale(0.985);
-            transition: opacity 0.45s cubic-bezier(0.16, 1, 0.3, 1), transform 0.45s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-        .slide-pane.active {
-            display: flex;
-            opacity: 1;
-            transform: translateY(0) scale(1);
-        }
-
-        /* Sub-step slider animation for Slide 6 */
-        .substep-pane {
-            display: none;
-            opacity: 0;
-            transform: translateX(18px);
-            transition: opacity 0.35s ease, transform 0.35s ease;
-        }
-        .substep-pane.active {
-            display: block;
-            opacity: 1;
-            transform: translateX(0);
-        }
-
-        /* Laser Grid Background */
-        .bg-grid-pattern {
-            background-image: radial-gradient(rgba(74, 105, 140, 0.25) 1px, transparent 1px);
-            background-size: 24px 24px;
-        }
-
-        /* Engineering Laser Pulse */
-        @keyframes laserGlow {
-            0%, 100% { filter: drop-shadow(0 0 4px rgba(16, 185, 129, 0.8)); }
-            50% { filter: drop-shadow(0 0 12px rgba(16, 185, 129, 1)); }
-        }
-        .laser-pulse {
-            animation: laserGlow 2s infinite ease-in-out;
-        }
-
-        /* Dynamic Flowing Circuit Dash Line */
-        @keyframes dashFlow {
-            to { stroke-dashoffset: -40; }
-        }
-        .flowing-dash {
-            stroke-dasharray: 8 6;
-            animation: dashFlow 1.8s linear infinite;
-        }
-
-        /* Expanding Ring Animation for Slide 12 Q&A */
-        @keyframes rippleExpand {
-            0% { transform: scale(0.8); opacity: 0.8; }
-            50% { transform: scale(1.15); opacity: 0.3; }
-            100% { transform: scale(0.8); opacity: 0.8; }
-        }
-        .ring-pulse-1 {
-            animation: rippleExpand 4s ease-in-out infinite;
-        }
-        .ring-pulse-2 {
-            animation: rippleExpand 4s ease-in-out 1.5s infinite;
-        }
-
-        /* Elevated Card Hover Physics */
-        .hover-card-elevate {
-            transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-        .hover-card-elevate:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 12px 24px -6px rgba(13, 35, 64, 0.15);
-        }
     </style>
 </head>
-<body class="h-screen flex flex-col justify-between antialiased select-none">
+<body class="bg-slate-50 text-darktext bg-grid-pattern h-screen flex flex-col justify-between overflow-hidden select-none">
 
-    <!-- TOP STICKY NAVIGATION BAR -->
-    <header class="bg-navy text-white h-16 px-4 md:px-8 flex items-center justify-between border-b border-navy-light shadow-lg shrink-0 z-50">
+    <header class="w-full bg-navy text-white px-6 py-3 flex items-center justify-between z-50 shadow-md border-b border-steel-dark">
+        <div class="flex items-center space-x-3">
+            <div class="bg-accent-yellow text-navy font-black text-xs px-2 py-1 rounded tracking-wider uppercase">Research Deck</div>
+            <span class="text-sm font-semibold text-slate-300 hidden md:inline border-l border-steel px-3">
+                arXiv:2303.12712v5 [cs.CL]
+            </span>
+        </div>
+        
+        <!-- Active Slide Title Indicator -->
+        <div id="nav-title-display" class="font-title font-bold text-base text-white tracking-wide truncate max-w-xs md:max-w-md">
+            1. Research Title
+        </div>
+
+        <!-- Utility Controls -->
         <div class="flex items-center space-x-4">
-            <div class="bg-accent-orange text-navy font-black px-3 py-1 rounded text-xs tracking-wider uppercase flex items-center gap-1.5 shadow">
-                <i class="fa-solid fa-microchip"></i> Engineering Deck
+            <button onclick="toggleFullscreen()" class="text-slate-300 hover:text-white transition p-1.5 rounded-lg hover:bg-navy-light" title="Toggle Fullscreen">
+                <i class="fa-solid fa-expand text-base" id="fullscreen-icon"></i>
+            </button>
+            <div class="text-xs font-mono bg-navy-dark px-3 py-1.5 rounded-full border border-steel-dark text-slate-300">
+                <span id="current-slide-num" class="text-accent-cyan font-bold">01</span> / <span id="total-slides-num">11</span>
             </div>
-            <div class="hidden md:flex flex-col">
-                <span class="text-[11px] font-semibold tracking-wider text-ice-light uppercase font-mono">Industrial AI Systems Research</span>
-                <span class="text-sm font-bold text-white truncate max-w-md" id="nav-slide-title">1. Title: SMT Optimization</span>
-            </div>
-        </div>
-
-        <!-- Slide Progress Bar & Indicator -->
-        <div class="hidden lg:flex flex-col items-center w-1/3 px-4">
-            <div class="flex justify-between w-full text-xs text-ice-light font-mono mb-1">
-                <span>PRESENTATION PROGRESS</span>
-                <span id="slide-number-label">01 / 12</span>
-            </div>
-            <div class="w-full bg-navy-dark rounded-full h-2 overflow-hidden border border-navy-light relative">
-                <div id="progress-bar" class="bg-gradient-to-r from-ice via-accent-orange to-accent-green h-full w-[8.33%] transition-all duration-300"></div>
-            </div>
-        </div>
-
-        <!-- Header Controls -->
-        <div class="flex items-center space-x-2 md:space-x-3">
-            <button onclick="toggleAutoplay()" id="autoplay-btn" class="px-3 py-1.5 bg-navy-light hover:bg-ice transition text-xs font-semibold rounded flex items-center gap-1.5 text-white" title="Toggle Auto Play">
-                <i class="fa-solid fa-play" id="autoplay-icon"></i>
-                <span class="hidden sm:inline" id="autoplay-text">Auto</span>
-            </button>
-
-            <button onclick="toggleOutlineModal()" class="px-3 py-1.5 bg-navy-light hover:bg-ice transition text-xs font-semibold rounded flex items-center gap-1.5 text-white" title="Slide Drawer">
-                <i class="fa-solid fa-list-squares"></i>
-                <span class="hidden sm:inline">Index</span>
-            </button>
-
-            <button onclick="toggleFullscreen()" class="p-2 bg-navy-light hover:bg-ice transition text-xs rounded text-white" title="Toggle Fullscreen">
-                <i class="fa-solid fa-expand"></i>
-            </button>
-
-            <div class="h-6 w-px bg-navy-light my-auto"></div>
-
-            <button onclick="prevSlide()" id="prev-btn" class="px-3 py-1.5 bg-navy-light hover:bg-ice disabled:opacity-30 transition text-xs font-bold rounded text-white flex items-center gap-1">
-                <i class="fa-solid fa-chevron-left"></i>
-                <span class="hidden sm:inline">PREV</span>
-            </button>
-
-            <button onclick="nextSlide()" id="next-btn" class="px-3 py-1.5 bg-accent-orange hover:bg-amber-600 transition text-xs font-bold rounded text-navy flex items-center gap-1 shadow">
-                <span class="hidden sm:inline">NEXT</span>
-                <i class="fa-solid fa-chevron-right"></i>
-            </button>
         </div>
     </header>
 
-    <!-- SLIDE VIEWPORT CONTAINER -->
-    <main class="flex-1 relative overflow-y-auto bg-navy-dark flex items-center justify-center p-2 sm:p-4 md:p-6">
-        <div class="w-full max-w-7xl h-full min-h-[640px] max-h-[850px] bg-white rounded-2xl border border-slate-700/60 shadow-2xl flex flex-col overflow-hidden relative">
+    <main class="flex-1 relative w-full h-full overflow-hidden flex items-center justify-center p-4 md:p-8">
 
-            <!-- SLIDE 1: COVER PAGE -->
-            <div id="slide-1" class="slide-pane active w-full h-full flex-col lg:flex-row">
-                <!-- Left Section (Navy Trapezoid Split) -->
-                <div class="w-full lg:w-7/12 bg-navy trapezoid-left p-8 sm:p-12 lg:p-14 flex flex-col justify-between text-white relative bg-grid-pattern z-10">
-                    <div>
-                        <div class="inline-flex items-center gap-2 px-3.5 py-1.5 bg-navy-light/90 border border-ice/30 rounded-full text-xs font-mono font-semibold text-accent-yellow mb-6">
-                            <span class="w-2.5 h-2.5 rounded-full bg-accent-green animate-ping"></span> Industrial AI & Engineering Research
+        <!-- ==================== SLIDE 1: COVER PAGE ==================== -->
+        <section id="slide-0" class="slide-content active w-full h-full max-w-7xl mx-auto flex-col justify-center relative">
+            <div class="w-full h-full bg-white rounded-2xl shadow-2xl border border-slate-200 overflow-hidden flex flex-col md:flex-row relative">
+                <!-- Left Trapezoid Navy Section -->
+                <div class="w-full md:w-3/5 bg-navy trapezoid-bg p-8 md:p-14 flex flex-col justify-between z-10 text-white">
+                    <div class="space-y-4">
+                        <div class="inline-flex items-center space-x-2 bg-navy-light text-accent-cyan border border-accent-cyan/30 text-xs px-3 py-1 rounded-full uppercase tracking-wider font-semibold">
+                            <i class="fa-solid fa-atom animate-spin"></i>
+                            <span>Microsoft Research Study</span>
                         </div>
-                        <h1 class="text-3xl sm:text-4xl lg:text-5xl font-black font-heading leading-tight tracking-tight mb-4 text-white">
-                            Optimization of SMT Assembly Lines
+                        <h1 class="font-title font-extrabold text-3xl md:text-5xl lg:text-6xl text-white leading-tight">
+                            Sparks of Artificial General Intelligence
                         </h1>
-                        <p class="text-lg font-light text-ice-muted leading-relaxed max-w-xl">
-                            Closed-Loop Vision AI and Value Stream Mapping (VSM) for High-Speed Electronics Manufacturing.
+                        <p class="text-slate-300 text-lg md:text-xl font-light">
+                            Early Experiments with GPT-4
                         </p>
                     </div>
 
-                    <div class="mt-8 pt-6 border-t border-navy-light/60 grid grid-cols-2 gap-4 text-sm">
-                        <div>
-                            <span class="block text-ice-light font-mono text-xs uppercase tracking-wider mb-0.5">Lead Researcher</span>
-                            <span class="font-bold text-white text-base">Dr. Alex V. Mercer, PE</span>
-                            <span class="block text-slate-300 text-xs">Automation Systems Lab</span>
-                        </div>
-                        <div>
-                            <span class="block text-ice-light font-mono text-xs uppercase tracking-wider mb-0.5">Domain Protocol</span>
-                            <span class="font-bold text-white text-base">Smart Robotics & IoT</span>
-                            <span class="block text-slate-300 text-xs">ISO-9001 Benchmark</span>
-                        </div>
+                    <div class="pt-8 border-t border-steel-dark/60 space-y-3">
+                        <p class="text-xs uppercase tracking-widest text-slate-400 font-mono">Lead Authors</p>
+                        <p class="text-sm font-medium text-slate-200">
+                            Sébastien Bubeck, Varun Chandrasekaran, Ronen Eldan, Johannes Gehrke, Eric Horvitz, Ece Kamar, Peter Lee, Yin Tat Lee, Yuanzhi Li, Scott Lundberg, Harsha Nori, Hamid Palangi, Marco Tulio Ribeiro, Yi Zhang
+                        </p>
                     </div>
                 </div>
 
-                <!-- Right Section (Schematic & Animated Laser Dot) -->
-                <div class="w-full lg:w-5/12 bg-slate-900 p-8 flex flex-col justify-between relative overflow-hidden">
-                    <div class="absolute inset-0 opacity-20 bg-[radial-gradient(#4A698C_1px,transparent_1px)] [background-size:16px_16px]"></div>
+                <!-- Right Visual Section -->
+                <div class="w-full md:w-2/5 relative bg-slate-900 flex items-center justify-center p-8 overflow-hidden">
+                    <div class="absolute inset-0 opacity-20 bg-[radial-gradient(#06B6D4_1px,transparent_1px)] [background-size:16px_16px]"></div>
                     
-                    <div class="relative z-10 space-y-6 my-auto">
-                        <div class="bg-navy/90 backdrop-blur border border-ice/30 rounded-xl p-5 shadow-xl">
-                            <div class="flex justify-between items-center mb-3">
-                                <span class="text-xs font-mono text-accent-green flex items-center gap-2 font-bold">
-                                    <span class="w-2.5 h-2.5 rounded-full bg-accent-green animate-pulse"></span> TELEMETRY FEED ACTIVE
-                                </span>
-                                <span class="text-xs text-ice-light font-mono">MODEL v4.2</span>
+                    <!-- Anime Tech Graphic Box -->
+                    <div class="relative z-10 w-full max-w-sm anime-card p-6 rounded-xl border border-steel/30 shadow-2xl space-y-4">
+                        <div class="flex items-center justify-between border-b border-slate-200 pb-3">
+                            <span class="text-xs font-mono text-steel font-bold uppercase tracking-wider">System Architecture</span>
+                            <span class="flex h-2.5 w-2.5 relative">
+                              <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-accent-green opacity-75"></span>
+                              <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-accent-green"></span>
+                            </span>
+                        </div>
+                        <div class="space-y-2">
+                            <div class="flex justify-between text-xs font-medium">
+                                <span class="text-slate-600">Cognitive Scope</span>
+                                <span class="text-navy font-bold">Multidisciplinary</span>
                             </div>
-                            <div class="grid grid-cols-2 gap-3 text-white font-mono">
-                                <div class="bg-navy-dark/80 p-3 rounded-lg border border-ice/20">
-                                    <div class="text-[11px] text-slate-400">Baseline Yield</div>
-                                    <div class="text-2xl font-black text-white" data-countup="91.2" data-suffix="%">91.2%</div>
+                            <div class="w-full bg-slate-200 h-2 rounded-full overflow-hidden">
+                                <div class="bg-accent-cyan h-full w-[92%]"></div>
+                            </div>
+                        </div>
+                        <div class="space-y-2">
+                            <div class="flex justify-between text-xs font-medium">
+                                <span class="text-slate-600">Reasoning Depth</span>
+                                <span class="text-navy font-bold">Human-Level (AGI Step)</span>
+                            </div>
+                            <div class="w-full bg-slate-200 h-2 rounded-full overflow-hidden">
+                                <div class="bg-accent-green h-full w-[88%]"></div>
+                            </div>
+                        </div>
+                        <div class="p-3 bg-navy/5 rounded-lg border border-navy/10 text-xs text-slate-700 italic">
+                            "Exhibits more general intelligence than previous AI models, solving complex tasks in math, coding, law, and medicine."
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== SLIDE 2: OBJECTIVES ==================== -->
+        <section id="slide-1" class="slide-content w-full h-full max-w-7xl mx-auto flex-col justify-center">
+            <div class="w-full h-full bg-white rounded-2xl shadow-xl border border-slate-200 p-8 md:p-12 flex flex-col justify-between">
+                <div>
+                    <!-- Section Header -->
+                    <div class="flex items-center space-x-3 mb-6">
+                        <div class="w-3 h-8 bg-navy rounded-full"></div>
+                        <h2 class="font-title font-extrabold text-2xl md:text-4xl text-navy">Research Objectives</h2>
+                    </div>
+
+                    <!-- 60:40 Split Layout -->
+                    <div class="grid grid-cols-1 md:grid-cols-12 gap-8 items-center mt-4">
+                        <!-- 60% Left Content -->
+                        <div class="md:col-span-7 space-y-4">
+                            <p class="text-slate-700 font-medium text-lg leading-relaxed">
+                                The primary goal of this research is to evaluate early, non-multimodal GPT-4 capabilities beyond traditional standard benchmarks to measure progress toward Artificial General Intelligence (AGI).
+                            </p>
+                            
+                            <ul class="space-y-3 pt-2">
+                                <li class="flex items-start space-x-3 bg-slate-50 p-3.5 rounded-xl border-l-4 border-navy">
+                                    <i class="fa-solid fa-bullseye text-accent-orange mt-1"></i>
+                                    <div>
+                                        <strong class="text-navy font-bold block text-sm">Cross-Domain Capability Analysis</strong>
+                                        <span class="text-slate-600 text-sm">Probe holistic performance across mathematics, coding, vision (SVG/TikZ), law, medicine, and psychology.</span>
+                                    </div>
+                                </li>
+                                <li class="flex items-start space-x-3 bg-slate-50 p-3.5 rounded-xl border-l-4 border-steel">
+                                    <i class="fa-solid fa-microscope text-accent-cyan mt-1"></i>
+                                    <div>
+                                        <strong class="text-navy font-bold block text-sm">Generative Rigor vs. Memorization</strong>
+                                        <span class="text-slate-600 text-sm">Develop novel, hard interactive prompts to prove true cognitive reasoning over rote memorization.</span>
+                                    </div>
+                                </li>
+                                <li class="flex items-start space-x-3 bg-slate-50 p-3.5 rounded-xl border-l-4 border-accent-green">
+                                    <i class="fa-solid fa-triangle-exclamation text-accent-green mt-1"></i>
+                                    <div>
+                                        <strong class="text-navy font-bold block text-sm">Architectural Boundary Identification</strong>
+                                        <span class="text-slate-600 text-sm">Uncover failure modes, hallucinations, and limitations inherent to purely autoregressive next-word prediction.</span>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <!-- 40% Right Visual Masked Image -->
+                        <div class="md:col-span-5 flex justify-center">
+                            <div class="relative w-64 h-64 md:w-80 md:h-80 bg-slate-900 mask-circle flex items-center justify-center shadow-2xl p-6 border-4 border-navy">
+                                <div class="absolute inset-0 bg-gradient-to-tr from-navy via-steel-dark to-accent-cyan opacity-80"></div>
+                                <div class="relative z-10 text-center space-y-3 p-4">
+                                    <i class="fa-solid fa-brain text-5xl text-accent-yellow animate-bounce"></i>
+                                    <h3 class="font-title font-bold text-white text-xl">AGI Assessment Paradigm</h3>
+                                    <p class="text-xs text-slate-200">Moving from narrow bench task benchmarks to psychological qualitative probing.</p>
                                 </div>
-                                <div class="bg-navy-dark/80 p-3 rounded-lg border border-accent-green/50">
-                                    <div class="text-[11px] text-slate-400">Target Yield</div>
-                                    <div class="text-2xl font-black text-accent-green" data-countup="98.5" data-suffix="%">98.5%</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex justify-between items-center pt-4 border-t border-slate-100 text-xs text-slate-400">
+                    <span>Target Paradigm: Qualitative & Generative Psychology</span>
+                    <span>Evaluation Model: GPT-4 (Early Release)</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== SLIDE 3: RESEARCH VARIABLES ==================== -->
+        <section id="slide-2" class="slide-content w-full h-full max-w-7xl mx-auto flex-col justify-center">
+            <div class="w-full h-full bg-white rounded-2xl shadow-xl border border-slate-200 p-8 md:p-12 flex flex-col justify-between">
+                <div>
+                    <div class="flex items-center space-x-3 mb-6">
+                        <div class="w-3 h-8 bg-navy rounded-full"></div>
+                        <h2 class="font-title font-extrabold text-2xl md:text-4xl text-navy">Experimental Variables</h2>
+                    </div>
+
+                    <!-- 3 Structured Grid Columns -->
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6">
+                        
+                        <!-- Independent Variable -->
+                        <div class="anime-card p-6 rounded-2xl border-t-4 border-accent-cyan flex flex-col justify-between space-y-4">
+                            <div>
+                                <div class="flex items-center justify-between mb-3">
+                                    <span class="text-xs font-mono font-bold uppercase text-accent-cyan bg-accent-cyan/10 px-2.5 py-1 rounded-md">Variable #1</span>
+                                    <i class="fa-solid fa-sliders text-accent-cyan text-xl"></i>
                                 </div>
+                                <h3 class="font-title font-bold text-xl text-navy mb-2">Independent Variable</h3>
+                                <p class="text-sm font-semibold text-slate-700 mb-3">Model Architecture & Tier</p>
+                                <ul class="text-xs text-slate-600 space-y-2 list-disc list-inside">
+                                    <li>Early Version <strong>GPT-4</strong> (Pre-deployment, text-only input during tests).</li>
+                                    <li>Baseline baseline LLMs: <strong>ChatGPT (GPT-3.5)</strong> and Google's PaLM.</li>
+                                    <li>Human expert standard benchmarks.</li>
+                                </ul>
+                            </div>
+                            <div class="p-3 bg-slate-50 rounded-xl text-xs text-slate-500 font-mono">
+                                Manipulated across benchmark tasks.
                             </div>
                         </div>
 
-                        <!-- Circuit Path Graphic -->
-                        <div class="border border-ice/40 bg-navy-dark/90 rounded-xl p-4 relative shadow-lg">
-                            <div class="text-xs font-mono text-ice-light mb-2 flex justify-between">
-                                <span>SMT REFLOW CIRCUIT PIPELINE</span>
-                                <span class="text-accent-yellow font-bold">SIGNAL OK</span>
-                            </div>
-                            <svg viewBox="0 0 320 120" class="w-full h-auto">
-                                <path id="coverPath" d="M 20 60 L 90 60 L 160 60 L 230 60 L 300 60" fill="none" stroke="#4A698C" stroke-width="3" class="flowing-dash"/>
-                                
-                                <circle cx="40" cy="60" r="16" fill="#0D2340" stroke="#10B981" stroke-width="2"/>
-                                <text x="32" y="64" fill="#FFF" font-size="9" font-weight="bold">SPI</text>
-
-                                <circle cx="120" cy="60" r="16" fill="#0D2340" stroke="#F97316" stroke-width="2"/>
-                                <text x="110" y="64" fill="#FFF" font-size="9" font-weight="bold">P&P</text>
-
-                                <circle cx="200" cy="60" r="16" fill="#0D2340" stroke="#4A698C" stroke-width="2"/>
-                                <text x="189" y="64" fill="#FFF" font-size="9" font-weight="bold">OVEN</text>
-
-                                <circle cx="280" cy="60" r="16" fill="#0D2340" stroke="#10B981" stroke-width="2"/>
-                                <text x="270" y="64" fill="#FFF" font-size="9" font-weight="bold">AOI</text>
-
-                                <circle r="6" fill="#F59E0B" class="laser-pulse">
-                                    <animateMotion dur="3.5s" repeatCount="indefinite" path="M 20 60 L 90 60 L 160 60 L 230 60 L 300 60"/>
-                                </circle>
-                            </svg>
-                        </div>
-                    </div>
-
-                    <div class="relative z-10 text-xs text-slate-400 font-mono text-right mt-2">
-                        SYSTEM ARCHITECTURE // ISO-9001 COMPLIANT
-                    </div>
-                </div>
-            </div>
-
-            <!-- SLIDE 2: RESEARCH OBJECTIVES (60:40 SPLIT WITH CIRCULAR MASK GRAPHIC) -->
-            <div id="slide-2" class="slide-pane w-full h-full p-6 sm:p-10 flex-col justify-between bg-white">
-                <div>
-                    <div class="flex items-center gap-3 mb-1">
-                        <span class="h-3.5 w-3.5 bg-navy rounded-full"></span>
-                        <span class="text-xs font-bold text-ice uppercase tracking-widest font-mono">Section 01 // Strategic Directives</span>
-                    </div>
-                    <h2 class="text-3xl sm:text-4xl font-extrabold font-heading text-navy mb-2">2. Research Objectives</h2>
-                    <p class="slide-body-text max-w-3xl">Systematic engineering targets structured to maximize Overall Equipment Effectiveness (OEE) and eliminate line stoppages.</p>
-                </div>
-
-                <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 my-auto items-center">
-                    <!-- Left Column 60%: Bullet Points with 22px Subheaders -->
-                    <div class="lg:col-span-7 space-y-5">
-                        <div class="p-4 bg-slate-50 border-l-4 border-navy rounded-r-xl shadow-sm hover-card-elevate">
-                            <h3 class="text-[22px] font-bold text-navy mb-1 flex items-center justify-between">
-                                <span>1. Reduce Unplanned Downtime</span>
-                                <span class="text-xs font-mono font-bold text-accent-green bg-green-100 px-2.5 py-1 rounded-full">-34% DOWNTIME</span>
-                            </h3>
-                            <p class="slide-body-text text-charcoal">
-                                Deploy AI vibration and optical sensors on high-speed pick nozzles to detect component micro-displacement prior to feeder jamming.
-                            </p>
-                        </div>
-
-                        <div class="p-4 bg-slate-50 border-l-4 border-ice rounded-r-xl shadow-sm hover-card-elevate">
-                            <h3 class="text-[22px] font-bold text-navy mb-1 flex items-center justify-between">
-                                <span>2. Reflow Soak Optimization</span>
-                                <span class="text-xs font-mono font-bold text-accent-orange bg-orange-100 px-2.5 py-1 rounded-full">THERMAL RESTRUCTURE</span>
-                            </h3>
-                            <p class="slide-body-text text-charcoal">
-                                Redesign the 10-zone reflow furnace thermal profile using Value Stream Mapping (VSM) to trim non-value liquidus soak time.
-                            </p>
-                        </div>
-
-                        <div class="p-4 bg-slate-50 border-l-4 border-accent-orange rounded-r-xl shadow-sm hover-card-elevate">
-                            <h3 class="text-[22px] font-bold text-navy mb-1 flex items-center justify-between">
-                                <span>3. First Pass Yield Elevation</span>
-                                <span class="text-xs font-mono font-bold text-navy bg-amber-100 px-2.5 py-1 rounded-full">+7.3% FPY GAIN</span>
-                            </h3>
-                            <p class="slide-body-text text-charcoal">
-                                Elevate assembly line First Pass Yield from baseline 91.2% to 98.5% using SPI-to-Printer closed feedback loops.
-                            </p>
-                        </div>
-                    </div>
-
-                    <!-- Right Column 40%: Circular Masked Graphic -->
-                    <div class="lg:col-span-5 flex justify-center items-center relative">
-                        <div class="w-64 h-64 sm:w-80 sm:h-80 rounded-full border-4 border-navy/20 p-3 relative flex items-center justify-center bg-slate-900 shadow-2xl overflow-hidden">
-                            <!-- Circular Graphic Content -->
-                            <div class="absolute inset-0 bg-grid-pattern opacity-40"></div>
-                            <div class="w-48 h-48 sm:w-60 sm:h-60 rounded-full border-2 border-dashed border-accent-orange/60 flex flex-col items-center justify-center text-center p-4 bg-navy/90 backdrop-blur z-10 shadow-inner">
-                                <i class="fa-solid fa-bullseye text-3xl sm:text-4xl text-accent-yellow mb-2"></i>
-                                <span class="text-xs font-mono text-ice-light uppercase">TARGET OEE LEVEL</span>
-                                <span class="text-4xl font-black font-heading text-white" data-countup="89.0" data-suffix="%">89.0%</span>
-                                <span class="text-[11px] font-mono text-accent-green mt-1">World Class Standard</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="bg-navy-dark text-white p-3.5 rounded-xl flex justify-between items-center text-xs font-mono">
-                    <span class="text-ice-light"><i class="fa-solid fa-circle-info text-accent-yellow mr-2"></i>Standard Benchmark: ISO 22400 OEE Metric</span>
-                    <span class="text-accent-yellow font-bold">Targeted Trial: 6-Month Pilot</span>
-                </div>
-            </div>
-
-            <!-- SLIDE 3: INDEPENDENT VARIABLES -->
-            <div id="slide-3" class="slide-pane w-full h-full p-6 sm:p-10 flex-col justify-between bg-white">
-                <div>
-                    <div class="flex items-center gap-3 mb-1">
-                        <span class="h-3.5 w-3.5 bg-navy rounded-full"></span>
-                        <span class="text-xs font-bold text-ice uppercase tracking-widest font-mono">Section 02 // Variable Architecture</span>
-                    </div>
-                    <h2 class="text-3xl sm:text-4xl font-extrabold font-heading text-navy mb-2">3. Independent Variables</h2>
-                    <p class="slide-body-text">Input factors actively manipulated during experimental line tuning protocols.</p>
-                </div>
-
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 my-auto">
-                    <!-- Variable 1 Card -->
-                    <div class="border border-slate-200 rounded-2xl p-6 bg-slate-50 hover-card-elevate flex flex-col justify-between">
-                        <div>
-                            <div class="w-12 h-12 rounded-xl bg-amber-500 text-white flex items-center justify-center text-xl mb-4 shadow">
-                                <i class="fa-solid fa-temperature-arrow-up"></i>
-                            </div>
-                            <span class="text-xs font-mono font-bold text-amber-700 bg-amber-100 px-2.5 py-1 rounded-md uppercase">Input Variable 01</span>
-                            <h3 class="text-[22px] font-bold text-navy mt-3 mb-2">Reflow Peak Temperature</h3>
-                            <p class="slide-body-text text-charcoal">
-                                Systematically modulated peak zone heating range across experimental runs to observe alloy wetting characteristics.
-                            </p>
-                        </div>
-                        <div class="mt-6 pt-4 border-t border-slate-200 font-mono">
-                            <span class="text-xs text-slate-500 block">CONTROL RANGE:</span>
-                            <span class="text-2xl font-black text-navy">245°C - 255°C</span>
-                            <span class="text-xs text-slate-500 block mt-0.5">Steps: ±2.5°C intervals</span>
-                        </div>
-                    </div>
-
-                    <!-- Variable 2 Card -->
-                    <div class="border border-slate-200 rounded-2xl p-6 bg-slate-50 hover-card-elevate flex flex-col justify-between">
-                        <div>
-                            <div class="w-12 h-12 rounded-xl bg-cyan-500 text-white flex items-center justify-center text-xl mb-4 shadow">
-                                <i class="fa-solid fa-gauge-high"></i>
-                            </div>
-                            <span class="text-xs font-mono font-bold text-cyan-700 bg-cyan-100 px-2.5 py-1 rounded-md uppercase">Input Variable 02</span>
-                            <h3 class="text-[22px] font-bold text-navy mt-3 mb-2">Conveyor Speed</h3>
-                            <p class="slide-body-text text-charcoal">
-                                Servo-motor controlled line velocity adjusting board transport velocity through reflow heating zones.
-                            </p>
-                        </div>
-                        <div class="mt-6 pt-4 border-t border-slate-200 font-mono">
-                            <span class="text-xs text-slate-500 block">CONTROL RANGE:</span>
-                            <span class="text-2xl font-black text-navy">60 - 80 cm/min</span>
-                            <span class="text-xs text-slate-500 block mt-0.5">Regulated by closed servo</span>
-                        </div>
-                    </div>
-
-                    <!-- Variable 3 Card -->
-                    <div class="border border-slate-200 rounded-2xl p-6 bg-slate-50 hover-card-elevate flex flex-col justify-between">
-                        <div>
-                            <div class="w-12 h-12 rounded-xl bg-emerald-500 text-white flex items-center justify-center text-xl mb-4 shadow">
-                                <i class="fa-solid fa-brain"></i>
-                            </div>
-                            <span class="text-xs font-mono font-bold text-emerald-700 bg-emerald-100 px-2.5 py-1 rounded-md uppercase">Input Variable 03</span>
-                            <h3 class="text-[22px] font-bold text-navy mt-3 mb-2">AI Sampling Frequency</h3>
-                            <p class="slide-body-text text-charcoal">
-                                Variable frame-rate optical camera capture frequency for edge inference visual defect classification.
-                            </p>
-                        </div>
-                        <div class="mt-6 pt-4 border-t border-slate-200 font-mono">
-                            <span class="text-xs text-slate-500 block">CONTROL RANGE:</span>
-                            <span class="text-2xl font-black text-navy">1.2 - 2.4 GHz</span>
-                            <span class="text-xs text-slate-500 block mt-0.5">Edge Tensor acceleration</span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="bg-navy p-3.5 rounded-xl text-white flex justify-between items-center text-xs font-mono">
-                    <span>OPERATIONAL DESIGN: Full Factorial DOE Array</span>
-                    <span class="text-accent-yellow">3 Factors / 3 Levels</span>
-                </div>
-            </div>
-
-            <!-- SLIDE 4: DEPENDENT VARIABLES (DYNAMIC NUMERIC COUNTER ANIMATIONS) -->
-            <div id="slide-4" class="slide-pane w-full h-full p-6 sm:p-10 flex-col justify-between bg-white">
-                <div>
-                    <div class="flex items-center gap-3 mb-1">
-                        <span class="h-3.5 w-3.5 bg-navy rounded-full"></span>
-                        <span class="text-xs font-bold text-ice uppercase tracking-widest font-mono">Section 02 // Variable Architecture</span>
-                    </div>
-                    <h2 class="text-3xl sm:text-4xl font-extrabold font-heading text-navy mb-2">4. Dependent Variables</h2>
-                    <p class="slide-body-text">Output quality and throughput metrics measured to evaluate optimization impact.</p>
-                </div>
-
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 my-auto">
-                    <!-- Metric 1 -->
-                    <div class="bg-gradient-to-br from-navy to-navy-dark text-white p-6 rounded-2xl shadow-lg flex flex-col justify-between hover-card-elevate">
-                        <div class="flex justify-between items-start mb-4">
-                            <span class="text-xs font-mono text-accent-yellow bg-navy-light px-2.5 py-1 rounded">METRIC A</span>
-                            <i class="fa-solid fa-chart-line text-2xl text-accent-green"></i>
-                        </div>
-                        <div>
-                            <span class="text-xs font-mono text-ice-light uppercase block mb-1">Defect Density Rate</span>
-                            <div class="text-4xl font-black font-heading text-accent-green" data-countup="140" data-suffix=" PPM">140 PPM</div>
-                            <p class="text-xs text-slate-300 mt-2">Down from 1,250 PPM baseline at 3D AOI station.</p>
-                        </div>
-                    </div>
-
-                    <!-- Metric 2 -->
-                    <div class="bg-gradient-to-br from-navy to-navy-dark text-white p-6 rounded-2xl shadow-lg flex flex-col justify-between hover-card-elevate">
-                        <div class="flex justify-between items-start mb-4">
-                            <span class="text-xs font-mono text-accent-yellow bg-navy-light px-2.5 py-1 rounded">METRIC B</span>
-                            <i class="fa-solid fa-weight-hanging text-2xl text-accent-orange"></i>
-                        </div>
-                        <div>
-                            <span class="text-xs font-mono text-ice-light uppercase block mb-1">Joint Shear Strength</span>
-                            <div class="text-4xl font-black font-heading text-accent-orange" data-countup="48.2" data-suffix=" MPa">48.2 MPa</div>
-                            <p class="text-xs text-slate-300 mt-2">Verified through mechanical pull test protocol.</p>
-                        </div>
-                    </div>
-
-                    <!-- Metric 3 -->
-                    <div class="bg-gradient-to-br from-navy to-navy-dark text-white p-6 rounded-2xl shadow-lg flex flex-col justify-between hover-card-elevate">
-                        <div class="flex justify-between items-start mb-4">
-                            <span class="text-xs font-mono text-accent-yellow bg-navy-light px-2.5 py-1 rounded">METRIC C</span>
-                            <i class="fa-solid fa-stopwatch text-2xl text-accent-yellow"></i>
-                        </div>
-                        <div>
-                            <span class="text-xs font-mono text-ice-light uppercase block mb-1">Line Takt Time</span>
-                            <div class="text-4xl font-black font-heading text-accent-yellow" data-countup="14.2" data-suffix=" s">14.2 s</div>
-                            <p class="text-xs text-slate-300 mt-2">Reduced from 21.8s baseline takt duration.</p>
-                        </div>
-                    </div>
-
-                    <!-- Metric 4 -->
-                    <div class="bg-gradient-to-br from-navy to-navy-dark text-white p-6 rounded-2xl shadow-lg flex flex-col justify-between hover-card-elevate">
-                        <div class="flex justify-between items-start mb-4">
-                            <span class="text-xs font-mono text-accent-yellow bg-navy-light px-2.5 py-1 rounded">METRIC D</span>
-                            <i class="fa-solid fa-percent text-2xl text-cyan-400"></i>
-                        </div>
-                        <div>
-                            <span class="text-xs font-mono text-ice-light uppercase block mb-1">First Pass Yield</span>
-                            <div class="text-4xl font-black font-heading text-cyan-400" data-countup="98.5" data-suffix="%">98.5%</div>
-                            <p class="text-xs text-slate-300 mt-2">Statistically significant yield gain (p &lt; 0.001).</p>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="bg-slate-100 border border-slate-200 p-3.5 rounded-xl flex justify-between items-center text-xs text-charcoal font-mono">
-                    <span>DATA INTEGRITY: 100% Automated AOI Optical Verification</span>
-                    <span class="text-navy font-bold">Sample N = 1,200 Boards</span>
-                </div>
-            </div>
-
-            <!-- SLIDE 5: CONTROL VARIABLES -->
-            <div id="slide-5" class="slide-pane w-full h-full p-6 sm:p-10 flex-col justify-between bg-white">
-                <div>
-                    <div class="flex items-center gap-3 mb-1">
-                        <span class="h-3.5 w-3.5 bg-navy rounded-full"></span>
-                        <span class="text-xs font-bold text-ice uppercase tracking-widest font-mono">Section 02 // Variable Architecture</span>
-                    </div>
-                    <h2 class="text-3xl sm:text-4xl font-extrabold font-heading text-navy mb-2">5. Control Variables</h2>
-                    <p class="slide-body-text">Rigidly maintained baseline conditions to isolate experimental variable impacts.</p>
-                </div>
-
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 my-auto">
-                    <!-- Control 1 -->
-                    <div class="border border-slate-200 rounded-2xl p-6 bg-slate-50 hover-card-elevate">
-                        <div class="flex justify-between items-center mb-4">
-                            <span class="text-xs font-mono font-bold bg-slate-200 text-slate-800 px-3 py-1 rounded-full uppercase">ENV-01</span>
-                            <span class="w-3 h-3 rounded-full bg-accent-green"></span>
-                        </div>
-                        <h3 class="text-[22px] font-bold text-navy mb-2">Cleanroom Environment</h3>
-                        <p class="slide-body-text text-charcoal mb-4">
-                            Strict HVAC closed-loop regulation preventing temperature and relative humidity shifts from altering paste rheology.
-                        </p>
-                        <div class="bg-white p-3 rounded-xl border border-slate-200 font-mono text-xs space-y-1">
-                            <div class="flex justify-between"><span class="text-slate-500">Relative Humidity:</span> <strong class="text-navy">45% RH ±3%</strong></div>
-                            <div class="flex justify-between"><span class="text-slate-500">Ambient Temp:</span> <strong class="text-navy">22.0°C ±1°C</strong></div>
-                        </div>
-                    </div>
-
-                    <!-- Control 2 -->
-                    <div class="border border-slate-200 rounded-2xl p-6 bg-slate-50 hover-card-elevate">
-                        <div class="flex justify-between items-center mb-4">
-                            <span class="text-xs font-mono font-bold bg-slate-200 text-slate-800 px-3 py-1 rounded-full uppercase">MAT-02</span>
-                            <span class="w-3 h-3 rounded-full bg-accent-green"></span>
-                        </div>
-                        <h3 class="text-[22px] font-bold text-navy mb-2">Solder Alloy Standard</h3>
-                        <p class="slide-body-text text-charcoal mb-4">
-                            Standardized lead-free SAC305 formulation with Type 4 particle size distribution across all test batches.
-                        </p>
-                        <div class="bg-white p-3 rounded-xl border border-slate-200 font-mono text-xs space-y-1">
-                            <div class="flex justify-between"><span class="text-slate-500">Alloy Type:</span> <strong class="text-navy">SAC305 (Sn-Ag-Cu)</strong></div>
-                            <div class="flex justify-between"><span class="text-slate-500">Powder Size:</span> <strong class="text-navy">Type 4 (20-38µm)</strong></div>
-                        </div>
-                    </div>
-
-                    <!-- Control 3 -->
-                    <div class="border border-slate-200 rounded-2xl p-6 bg-slate-50 hover-card-elevate">
-                        <div class="flex justify-between items-center mb-4">
-                            <span class="text-xs font-mono font-bold bg-slate-200 text-slate-800 px-3 py-1 rounded-full uppercase">SUB-03</span>
-                            <span class="w-3 h-3 rounded-full bg-accent-green"></span>
-                        </div>
-                        <h3 class="text-[22px] font-bold text-navy mb-2">PCB Substrate Spec</h3>
-                        <p class="slide-body-text text-charcoal mb-4">
-                            Uniform 1.6mm FR-4 TG170 test boards with ENIG surface finish to maintain constant thermal mass.
-                        </p>
-                        <div class="bg-white p-3 rounded-xl border border-slate-200 font-mono text-xs space-y-1">
-                            <div class="flex justify-between"><span class="text-slate-500">Material Grade:</span> <strong class="text-navy">FR-4 TG170</strong></div>
-                            <div class="flex justify-between"><span class="text-slate-500">Surface Finish:</span> <strong class="text-navy">ENIG (3µin Au)</strong></div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="bg-navy p-3.5 rounded-xl text-white flex justify-between items-center text-xs font-mono">
-                    <span>CONTROL PROTOCOL: ISO-9001 Compliance Verified</span>
-                    <span class="text-accent-green font-bold">Variability Index: &lt; 0.5%</span>
-                </div>
-            </div>
-
-            <!-- SLIDE 6: METHODOLOGY / FLOWCHART (INTERACTIVE STEPPER & SVG TRACER) -->
-            <div id="slide-6" class="slide-pane w-full h-full p-6 sm:p-10 flex-col justify-between bg-white">
-                <div>
-                    <div class="flex items-center justify-between mb-1">
-                        <div class="flex items-center gap-3">
-                            <span class="h-3.5 w-3.5 bg-navy rounded-full"></span>
-                            <span class="text-xs font-bold text-ice uppercase tracking-widest font-mono">Section 03 // Process Flowchart</span>
-                        </div>
-                        <span class="text-xs font-mono text-accent-orange bg-orange-50 px-2.5 py-1 rounded border border-orange-200 font-bold">
-                            <i class="fa-solid fa-sliders mr-1"></i> Interactive Stepper Active
-                        </span>
-                    </div>
-                    <h2 class="text-3xl sm:text-4xl font-extrabold font-heading text-navy mb-1">6. Methodology & Flowchart</h2>
-                    <p class="slide-body-text">Click any node or step button to move the glowing SVG tracer along the connected path.</p>
-                </div>
-
-                <!-- SVG FLOW TRACK WITH SMOOTH TRACER -->
-                <div class="bg-navy-dark p-4 rounded-xl border border-navy-light shadow-md relative overflow-hidden my-2">
-                    <div class="flex justify-between text-xs font-mono text-ice-light mb-2">
-                        <span>SMT ASSEMBLY PIPELINE TRACKER</span>
-                        <span id="substep-phase-label" class="text-accent-yellow font-bold">STEP 1 OF 5</span>
-                    </div>
-
-                    <svg viewBox="0 0 700 70" class="w-full h-auto">
-                        <path id="pipelineTrack" d="M 70 35 L 210 35 L 350 35 L 490 35 L 630 35" fill="none" stroke="#183861" stroke-width="4"/>
-                        <path d="M 70 35 L 210 35 L 350 35 L 490 35 L 630 35" fill="none" stroke="#4A698C" stroke-width="2" class="flowing-dash"/>
-
-                        <!-- Step 1 Node -->
-                        <circle cx="70" cy="35" r="14" fill="#0D2340" stroke="#10B981" stroke-width="3" class="cursor-pointer" onclick="setSubstep(0)"/>
-                        <text x="64" y="39" fill="#FFF" font-size="10" font-weight="bold">P1</text>
-
-                        <!-- Step 2 Node -->
-                        <circle cx="210" cy="35" r="14" fill="#0D2340" stroke="#4A698C" stroke-width="3" class="cursor-pointer" onclick="setSubstep(1)"/>
-                        <text x="204" y="39" fill="#FFF" font-size="10" font-weight="bold">P2</text>
-
-                        <!-- Step 3 Node -->
-                        <circle cx="350" cy="35" r="14" fill="#0D2340" stroke="#4A698C" stroke-width="3" class="cursor-pointer" onclick="setSubstep(2)"/>
-                        <text x="344" y="39" fill="#FFF" font-size="10" font-weight="bold">P3</text>
-
-                        <!-- Step 4 Node -->
-                        <circle cx="490" cy="35" r="14" fill="#0D2340" stroke="#4A698C" stroke-width="3" class="cursor-pointer" onclick="setSubstep(3)"/>
-                        <text x="484" y="39" fill="#FFF" font-size="10" font-weight="bold">P4</text>
-
-                        <!-- Step 5 Node -->
-                        <circle cx="630" cy="35" r="14" fill="#0D2340" stroke="#4A698C" stroke-width="3" class="cursor-pointer" onclick="setSubstep(4)"/>
-                        <text x="624" y="39" fill="#FFF" font-size="10" font-weight="bold">P5</text>
-
-                        <!-- Animated Glowing Tracer Marker Circle -->
-                        <circle id="stepTrackerCircle" cx="70" cy="35" r="18" fill="none" stroke="#F97316" stroke-width="3.5" style="transition: cx 0.45s cubic-bezier(0.16, 1, 0.3, 1);"/>
-                    </svg>
-
-                    <!-- Sub-step Switcher Button Row -->
-                    <div class="grid grid-cols-5 gap-2 mt-2">
-                        <button onclick="setSubstep(0)" id="subtab-0" class="py-2 px-2 rounded text-xs font-mono font-bold transition bg-accent-orange text-navy shadow">1. Solder Printing</button>
-                        <button onclick="setSubstep(1)" id="subtab-1" class="py-2 px-2 rounded text-xs font-mono font-bold transition bg-navy-light text-ice-light hover:bg-ice">2. Pick & Place</button>
-                        <button onclick="setSubstep(2)" id="subtab-2" class="py-2 px-2 rounded text-xs font-mono font-bold transition bg-navy-light text-ice-light hover:bg-ice">3. Reflow Oven</button>
-                        <button onclick="setSubstep(3)" id="subtab-3" class="py-2 px-2 rounded text-xs font-mono font-bold transition bg-navy-light text-ice-light hover:bg-ice">4. 3D AOI AI</button>
-                        <button onclick="setSubstep(4)" id="subtab-4" class="py-2 px-2 rounded text-xs font-mono font-bold transition bg-navy-light text-ice-light hover:bg-ice">5. Auto Feedback</button>
-                    </div>
-                </div>
-
-                <!-- SUB-STEP CONTENT PANES WITH 18px READABLE TEXT -->
-                <div class="min-h-[200px] bg-slate-50 border border-slate-200 rounded-2xl p-6 relative shadow-inner">
-                    <!-- Substep Pane 1 -->
-                    <div id="substep-0" class="substep-pane active">
-                        <div class="flex justify-between items-start mb-2">
+                        <!-- Dependent Variable -->
+                        <div class="anime-card p-6 rounded-2xl border-t-4 border-accent-green flex flex-col justify-between space-y-4">
                             <div>
-                                <span class="text-xs font-mono text-navy font-bold bg-blue-100 px-2.5 py-0.5 rounded">METHODOLOGY STEP 01</span>
-                                <h3 class="text-2xl font-bold font-heading text-navy mt-1">Solder Paste Printing & 3D SPI Integration</h3>
+                                <div class="flex items-center justify-between mb-3">
+                                    <span class="text-xs font-mono font-bold uppercase text-accent-green bg-accent-green/10 px-2.5 py-1 rounded-md">Variable #2</span>
+                                    <i class="fa-solid fa-chart-line text-accent-green text-xl"></i>
+                                </div>
+                                <h3 class="font-title font-bold text-xl text-navy mb-2">Dependent Variable</h3>
+                                <p class="text-sm font-semibold text-slate-700 mb-3">Cognitive & Domain Performance</p>
+                                <ul class="text-xs text-slate-600 space-y-2 list-disc list-inside">
+                                    <li><strong>Accuracy Rate</strong> in LeetCode (Software Engineering), USMLE, Bar Exam.</li>
+                                    <li><strong>Qualitative synthesis</strong> (Shakespearean prime proof, TikZ unicorn visuals).</li>
+                                    <li>Theory of Mind & Commonsense accuracy.</li>
+                                </ul>
                             </div>
-                            <span class="text-xs font-mono bg-navy text-white px-3 py-1 rounded">Takt: 4.1s</span>
+                            <div class="p-3 bg-slate-50 rounded-xl text-xs text-slate-500 font-mono">
+                                Measured via human & automated evaluation.
+                            </div>
                         </div>
-                        <p class="slide-body-text text-charcoal mb-4">
-                            Solder paste is applied via dual-squeegee printing. Integrated 3D SPI inspects paste volumetric deposition height across all SMT pads using structured laser light.
-                        </p>
-                        <div class="grid grid-cols-3 gap-3 text-xs border-t border-slate-200 pt-3 font-mono">
-                            <div class="bg-white p-2.5 rounded-lg border"><span class="text-slate-500 block">Target Volume:</span> <strong class="text-navy">100% ±10%</strong></div>
-                            <div class="bg-white p-2.5 rounded-lg border"><span class="text-slate-500 block">Trigger:</span> <strong class="text-accent-green">Auto Stencil Wipe</strong></div>
-                            <div class="bg-white p-2.5 rounded-lg border"><span class="text-slate-500 block">FPY Gain:</span> <strong class="text-accent-orange">+2.4% Recovery</strong></div>
-                        </div>
-                    </div>
 
-                    <!-- Substep Pane 2 -->
-                    <div id="substep-1" class="substep-pane">
-                        <div class="flex justify-between items-start mb-2">
+                        <!-- Control Variable -->
+                        <div class="anime-card p-6 rounded-2xl border-t-4 border-accent-orange flex flex-col justify-between space-y-4">
                             <div>
-                                <span class="text-xs font-mono text-navy font-bold bg-blue-100 px-2.5 py-0.5 rounded">METHODOLOGY STEP 02</span>
-                                <h3 class="text-2xl font-bold font-heading text-navy mt-1">High-Speed Pick & Place Nozzle Trajectory</h3>
+                                <div class="flex items-center justify-between mb-3">
+                                    <span class="text-xs font-mono font-bold uppercase text-accent-orange bg-accent-orange/10 px-2.5 py-1 rounded-md">Variable #3</span>
+                                    <i class="fa-solid fa-lock text-accent-orange text-xl"></i>
+                                </div>
+                                <h3 class="font-title font-bold text-xl text-navy mb-2">Control Variables</h3>
+                                <p class="text-sm font-semibold text-slate-700 mb-3">Prompt Environment & Rules</p>
+                                <ul class="text-xs text-slate-600 space-y-2 list-disc list-inside">
+                                    <li><strong>Zero-Shot Prompting</strong>: No fine-tuning or specialized domain prep.</li>
+                                    <li>Fixed mathematical & programmatic evaluation datasets.</li>
+                                    <li>Identical query text provided across compared LLMs.</li>
+                                </ul>
                             </div>
-                            <span class="text-xs font-mono bg-navy text-white px-3 py-1 rounded">Takt: 3.2s</span>
+                            <div class="p-3 bg-slate-50 rounded-xl text-xs text-slate-500 font-mono">
+                                Standardized interaction protocols.
+                            </div>
                         </div>
-                        <p class="slide-body-text text-charcoal mb-4">
-                            Multi-vision camera array inspects 0201 micro-SMD component alignment prior to placement. Bezier-curve trajectory algorithm minimizes head acceleration vibration.
-                        </p>
-                        <div class="grid grid-cols-3 gap-3 text-xs border-t border-slate-200 pt-3 font-mono">
-                            <div class="bg-white p-2.5 rounded-lg border"><span class="text-slate-500 block">Placement Accuracy:</span> <strong class="text-navy">±15 microns</strong></div>
-                            <div class="bg-white p-2.5 rounded-lg border"><span class="text-slate-500 block">Sensor Feed:</span> <strong class="text-accent-green">Vacuum Pressure</strong></div>
-                            <div class="bg-white p-2.5 rounded-lg border"><span class="text-slate-500 block">Speedup:</span> <strong class="text-accent-orange">+18% Head Velocity</strong></div>
-                        </div>
-                    </div>
 
-                    <!-- Substep Pane 3 -->
-                    <div id="substep-2" class="substep-pane">
-                        <div class="flex justify-between items-start mb-2">
-                            <div>
-                                <span class="text-xs font-mono text-navy font-bold bg-blue-100 px-2.5 py-0.5 rounded">METHODOLOGY STEP 03</span>
-                                <h3 class="text-2xl font-bold font-heading text-navy mt-1">10-Zone Reflow Furnace Thermal Profiling</h3>
-                            </div>
-                            <span class="text-xs font-mono bg-navy text-white px-3 py-1 rounded">Takt: 4.5s</span>
-                        </div>
-                        <p class="slide-body-text text-charcoal mb-4">
-                            Nitrogen-purged 10-zone reflow oven maintains peak liquidus temperature (TAL) above 217°C for 60 seconds, eliminating void formation and thermal stress.
-                        </p>
-                        <div class="grid grid-cols-3 gap-3 text-xs border-t border-slate-200 pt-3 font-mono">
-                            <div class="bg-white p-2.5 rounded-lg border"><span class="text-slate-500 block">Peak Temp:</span> <strong class="text-navy">248°C ±2.5°C</strong></div>
-                            <div class="bg-white p-2.5 rounded-lg border"><span class="text-slate-500 block">Atmosphere:</span> <strong class="text-accent-green">N2 Inert Purge</strong></div>
-                            <div class="bg-white p-2.5 rounded-lg border"><span class="text-slate-500 block">Voiding:</span> <strong class="text-accent-orange">&lt; 2.1% Target</strong></div>
-                        </div>
-                    </div>
-
-                    <!-- Substep Pane 4 -->
-                    <div id="substep-3" class="substep-pane">
-                        <div class="flex justify-between items-start mb-2">
-                            <div>
-                                <span class="text-xs font-mono text-navy font-bold bg-blue-100 px-2.5 py-0.5 rounded">METHODOLOGY STEP 04</span>
-                                <h3 class="text-2xl font-bold font-heading text-navy mt-1">3D AOI Deep Learning Visual Defect Classification</h3>
-                            </div>
-                            <span class="text-xs font-mono bg-navy text-white px-3 py-1 rounded">Takt: 1.8s</span>
-                        </div>
-                        <p class="slide-body-text text-charcoal mb-4">
-                            Multi-angle RGB LED projectors capture solder fillet geometry. Edge AI neural network classifies tombstoning, bridging, and misalignments in sub-15ms inference.
-                        </p>
-                        <div class="grid grid-cols-3 gap-3 text-xs border-t border-slate-200 pt-3 font-mono">
-                            <div class="bg-white p-2.5 rounded-lg border"><span class="text-slate-500 block">Inference Latency:</span> <strong class="text-navy">11.4 ms</strong></div>
-                            <div class="bg-white p-2.5 rounded-lg border"><span class="text-slate-500 block">Accuracy:</span> <strong class="text-accent-green">99.8% Precision</strong></div>
-                            <div class="bg-white p-2.5 rounded-lg border"><span class="text-slate-500 block">False Alarm:</span> <strong class="text-accent-orange">&lt; 0.05%</strong></div>
-                        </div>
-                    </div>
-
-                    <!-- Substep Pane 5 -->
-                    <div id="substep-4" class="substep-pane">
-                        <div class="flex justify-between items-start mb-2">
-                            <div>
-                                <span class="text-xs font-mono text-navy font-bold bg-blue-100 px-2.5 py-0.5 rounded">METHODOLOGY STEP 05</span>
-                                <h3 class="text-2xl font-bold font-heading text-navy mt-1">Closed-Loop OPC-UA Auto-Tuning Feedback</h3>
-                            </div>
-                            <span class="text-xs font-mono bg-navy text-white px-3 py-1 rounded">Sub-second</span>
-                        </div>
-                        <p class="slide-body-text text-charcoal mb-4">
-                            Inspection metrics logged at SPI and AOI dynamically feed offset corrections back into upstream stencil printers and pick heads via OPC-UA standard protocol.
-                        </p>
-                        <div class="grid grid-cols-3 gap-3 text-xs border-t border-slate-200 pt-3 font-mono">
-                            <div class="bg-white p-2.5 rounded-lg border"><span class="text-slate-500 block">Protocol:</span> <strong class="text-navy">OPC-UA / MQTT</strong></div>
-                            <div class="bg-white p-2.5 rounded-lg border"><span class="text-slate-500 block">Control Action:</span> <strong class="text-accent-green">Auto Micro-Tuning</strong></div>
-                            <div class="bg-white p-2.5 rounded-lg border"><span class="text-slate-500 block">Throughput:</span> <strong class="text-accent-orange">1.48x Gain</strong></div>
-                        </div>
                     </div>
                 </div>
 
-                <!-- Controls Footer -->
-                <div class="flex justify-between items-center text-xs text-slate-500 pt-1">
-                    <button onclick="prevSubstep()" class="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-navy font-bold rounded transition flex items-center gap-1">
-                        <i class="fa-solid fa-chevron-left"></i> Previous Step
-                    </button>
-                    <span class="font-mono text-navy">Use Buttons Above or Arrows to Slide Through Steps</span>
-                    <button onclick="nextSubstep()" class="px-3 py-1.5 bg-navy hover:bg-navy-light text-white font-bold rounded transition flex items-center gap-1">
-                        Next Step <i class="fa-solid fa-chevron-right"></i>
-                    </button>
+                <div class="flex justify-between items-center pt-4 border-t border-slate-100 text-xs text-slate-400">
+                    <span>Structured Engineering Framework</span>
+                    <span>Methodical Comparison</span>
                 </div>
             </div>
+        </section>
 
-            <!-- SLIDE 7: SIGNIFICANCE OF RESEARCH (60:40 SPLIT WITH TRIANGLE MASK) -->
-            <div id="slide-7" class="slide-pane w-full h-full p-6 sm:p-10 flex-col justify-between bg-white">
+        <!-- ==================== SLIDE 4: METHODOLOGY & FLOWCHART ==================== -->
+        <section id="slide-3" class="slide-content w-full h-full max-w-7xl mx-auto flex-col justify-center">
+            <div class="w-full h-full bg-white rounded-2xl shadow-xl border border-slate-200 p-6 md:p-10 flex flex-col justify-between">
                 <div>
-                    <div class="flex items-center gap-3 mb-1">
-                        <span class="h-3.5 w-3.5 bg-navy rounded-full"></span>
-                        <span class="text-xs font-bold text-ice uppercase tracking-widest font-mono">Section 04 // Lean Transformation</span>
+                    <div class="flex items-center space-x-3 mb-4">
+                        <div class="w-3 h-8 bg-navy rounded-full"></div>
+                        <h2 class="font-title font-extrabold text-2xl md:text-3xl text-navy">Methodology & Experimental Flowchart</h2>
                     </div>
-                    <h2 class="text-3xl sm:text-4xl font-extrabold font-heading text-navy mb-2">7. Significance of Research</h2>
-                    <p class="slide-body-text">Industrial Engineering ECRS Principles implemented for process stream optimization.</p>
-                </div>
+                    
+                    <p class="text-xs md:text-sm text-slate-600 mb-6">
+                        Unlike conventional machine learning benchmarks prone to dataset contamination, the study employs a qualitative psychological probing approach.
+                    </p>
 
-                <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 my-auto items-center">
-                    <!-- Left Column 60%: ECRS Cards -->
-                    <div class="lg:col-span-7 grid grid-cols-1 sm:grid-cols-2 gap-4">
-                        <div class="bg-slate-50 border-t-4 border-amber-500 p-4 rounded-b-xl shadow-sm hover-card-elevate">
-                            <span class="text-xs font-mono font-bold text-amber-900 bg-amber-100 px-2 py-0.5 rounded">ELIMINATE</span>
-                            <h3 class="text-lg font-bold text-navy mt-2 mb-1">Manual Inspection</h3>
-                            <p class="text-sm text-charcoal">Replaced offline sampling with 100% inline AI optical defect scanning.</p>
-                        </div>
-
-                        <div class="bg-slate-50 border-t-4 border-orange-500 p-4 rounded-b-xl shadow-sm hover-card-elevate">
-                            <span class="text-xs font-mono font-bold text-orange-900 bg-orange-100 px-2 py-0.5 rounded">COMBINE</span>
-                            <h3 class="text-lg font-bold text-navy mt-2 mb-1">Solder & Alignment</h3>
-                            <p class="text-sm text-charcoal">Integrated stencil offset checks into pick-and-place fiducial scanning.</p>
-                        </div>
-
-                        <div class="bg-slate-50 border-t-4 border-blue-500 p-4 rounded-b-xl shadow-sm hover-card-elevate">
-                            <span class="text-xs font-mono font-bold text-blue-900 bg-blue-100 px-2 py-0.5 rounded">REARRANGE</span>
-                            <h3 class="text-lg font-bold text-navy mt-2 mb-1">Thermal Warmup</h3>
-                            <p class="text-xs text-charcoal">Shifted furnace pre-heating to run concurrently with feeder reload.</p>
-                        </div>
-
-                        <div class="bg-slate-50 border-t-4 border-emerald-500 p-4 rounded-b-xl shadow-sm hover-card-elevate">
-                            <span class="text-xs font-mono font-bold text-emerald-900 bg-emerald-100 px-2 py-0.5 rounded">SIMPLIFY</span>
-                            <h3 class="text-lg font-bold text-navy mt-2 mb-1">Nozzle Trajectories</h3>
-                            <p class="text-xs text-charcoal">Replaced linear moves with minimum jerk Bezier motion paths.</p>
-                        </div>
-                    </div>
-
-                    <!-- Right Column 40%: Triangle Masked Graphic -->
-                    <div class="lg:col-span-5 bg-navy text-white p-8 rounded-2xl shadow-xl triangle-mask relative overflow-hidden flex flex-col justify-between h-full min-h-[260px]">
-                        <div>
-                            <span class="text-xs font-mono text-accent-yellow uppercase block mb-2">ANNUAL ECONOMIC IMPACT</span>
-                            <h3 class="text-3xl font-black font-heading text-white">$184,000</h3>
-                            <p class="text-sm text-ice-muted mt-2 leading-relaxed">
-                                Cost avoidance per SMT assembly line achieved via scrap reduction and QA labor reallocation.
-                            </p>
-                        </div>
-                        <div class="pt-4 border-t border-navy-light text-xs font-mono text-accent-green flex items-center gap-2">
-                            <i class="fa-solid fa-award text-lg text-accent-yellow"></i> Verified Lean ROI Benchmark
-                        </div>
-                    </div>
-                </div>
-
-                <div class="bg-navy-dark text-white p-3.5 rounded-xl flex justify-between items-center text-xs font-mono">
-                    <span>FRAMEWORK: ECRS Lean Optimization Protocol</span>
-                    <span class="text-accent-yellow">Annual Savings: $184k / Line</span>
-                </div>
-            </div>
-
-            <!-- SLIDE 8: STRENGTHS (3-COLUMN TECHNICAL ADVANTAGES) -->
-            <div id="slide-8" class="slide-pane w-full h-full p-6 sm:p-10 flex-col justify-between bg-white">
-                <div>
-                    <div class="flex items-center gap-3 mb-1">
-                        <span class="h-3.5 w-3.5 bg-navy rounded-full"></span>
-                        <span class="text-xs font-bold text-ice uppercase tracking-widest font-mono">Section 05 // Technical Evaluation</span>
-                    </div>
-                    <h2 class="text-3xl sm:text-4xl font-extrabold font-heading text-navy mb-2">8. Research Strengths</h2>
-                    <p class="slide-body-text">Core technical advantages of the AI-driven closed-loop assembly architecture.</p>
-                </div>
-
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 my-auto">
-                    <!-- Column 1 -->
-                    <div class="border border-slate-200 rounded-2xl p-6 bg-slate-50 hover-card-elevate flex flex-col justify-between">
-                        <div>
-                            <div class="w-12 h-12 rounded-xl bg-navy text-white flex items-center justify-center text-xl mb-4 shadow">
-                                <i class="fa-solid fa-plug-circle-check"></i>
-                            </div>
-                            <span class="text-xs font-mono font-bold text-navy bg-blue-100 px-2.5 py-1 rounded">COMPATIBILITY</span>
-                            <h3 class="text-[22px] font-bold text-navy mt-3 mb-2">Legacy Hardware Plug</h3>
-                            <p class="slide-body-text text-charcoal">
-                                Native integration with standard OPC-UA and Modbus protocols without requiring full capital equipment replacement.
-                            </p>
-                        </div>
-                        <div class="mt-4 pt-3 border-t border-slate-200 font-mono text-xs text-emerald-600 font-bold">
-                            <i class="fa-solid fa-check mr-1"></i> Zero Hardware Retrofit Cost
-                        </div>
-                    </div>
-
-                    <!-- Column 2 -->
-                    <div class="border border-slate-200 rounded-2xl p-6 bg-slate-50 hover-card-elevate flex flex-col justify-between">
-                        <div>
-                            <div class="w-12 h-12 rounded-xl bg-accent-orange text-white flex items-center justify-center text-xl mb-4 shadow">
-                                <i class="fa-solid fa-bolt-lightning"></i>
-                            </div>
-                            <span class="text-xs font-mono font-bold text-orange-900 bg-orange-100 px-2.5 py-1 rounded">SPEED</span>
-                            <h3 class="text-[22px] font-bold text-navy mt-3 mb-2">Sub-15ms AI Latency</h3>
-                            <p class="slide-body-text text-charcoal">
-                                Lightweight edge tensor vision models compute defect probabilities directly on local edge GPU frames.
-                            </p>
-                        </div>
-                        <div class="mt-4 pt-3 border-t border-slate-200 font-mono text-xs text-emerald-600 font-bold">
-                            <i class="fa-solid fa-check mr-1"></i> Real-time Line Rate Inference
-                        </div>
-                    </div>
-
-                    <!-- Column 3 -->
-                    <div class="border border-slate-200 rounded-2xl p-6 bg-slate-50 hover-card-elevate flex flex-col justify-between">
-                        <div>
-                            <div class="w-12 h-12 rounded-xl bg-accent-green text-white flex items-center justify-center text-xl mb-4 shadow">
-                                <i class="fa-solid fa-arrows-rotate"></i>
-                            </div>
-                            <span class="text-xs font-mono font-bold text-emerald-900 bg-emerald-100 px-2.5 py-1 rounded">AUTONOMY</span>
-                            <h3 class="text-[22px] font-bold text-navy mt-3 mb-2">Closed-Loop Auto-Tune</h3>
-                            <p class="slide-body-text text-charcoal">
-                                Autonomous micro-adjustments feed directly to squeegee pressure and pick heads without operator intervention.
-                            </p>
-                        </div>
-                        <div class="mt-4 pt-3 border-t border-slate-200 font-mono text-xs text-emerald-600 font-bold">
-                            <i class="fa-solid fa-check mr-1"></i> Autonomous Self-Healing Line
-                        </div>
-                    </div>
-                </div>
-
-                <div class="bg-navy p-3.5 rounded-xl text-white flex justify-between items-center text-xs font-mono">
-                    <span>SYSTEM SCORE: 9.2 / 10 Evaluation Index</span>
-                    <span class="text-accent-green font-bold">High System Reliability</span>
-                </div>
-            </div>
-
-            <!-- SLIDE 9: WEAKNESSES & RISK ANALYSIS (ISHIKAWA FISHBONE DIAGRAM) -->
-            <div id="slide-9" class="slide-pane w-full h-full p-6 sm:p-10 flex-col justify-between bg-white">
-                <div>
-                    <div class="flex items-center gap-3 mb-1">
-                        <span class="h-3.5 w-3.5 bg-navy rounded-full"></span>
-                        <span class="text-xs font-bold text-ice uppercase tracking-widest font-mono">Section 05 // Root Cause & Risk Analysis</span>
-                    </div>
-                    <h2 class="text-3xl sm:text-4xl font-extrabold font-heading text-navy mb-1">9. Weaknesses & Risk Analysis</h2>
-                    <p class="slide-body-text">Ishikawa Fishbone cause and effect mapping for operational constraints and mitigation strategy.</p>
-                </div>
-
-                <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 my-auto items-center">
-                    <!-- SVG Fishbone Diagram -->
-                    <div class="lg:col-span-8 bg-slate-50 border border-slate-200 rounded-2xl p-4 shadow-sm">
-                        <div class="flex justify-between items-center mb-1 text-xs font-mono">
-                            <span class="font-bold text-navy">ISHIKAWA FISHBONE DIAGRAM</span>
-                            <span class="text-slate-500">Flowing indicators show cause vectors</span>
-                        </div>
-                        <svg viewBox="0 0 520 230" class="w-full h-auto">
-                            <!-- Main Spine Path -->
-                            <path d="M 20 115 L 430 115" stroke="#0D2340" stroke-width="4" fill="none"/>
-                            <polygon points="430,102 475,115 430,128" fill="#0D2340"/>
-                            <text x="435" y="119" fill="#FFF" font-size="9" font-weight="bold">DEFECT</text>
-
-                            <!-- Upper Rib 1: MACHINE -->
-                            <line x1="90" y1="115" x2="160" y2="35" stroke="#4A698C" stroke-width="2.5"/>
-                            <rect x="130" y="15" width="70" height="20" rx="4" fill="#0D2340"/>
-                            <text x="142" y="28" fill="#FFF" font-size="9" font-weight="bold">MACHINE</text>
-
-                            <!-- Upper Rib 2: METHOD -->
-                            <line x1="240" y1="115" x2="310" y2="35" stroke="#4A698C" stroke-width="2.5"/>
-                            <rect x="280" y="15" width="70" height="20" rx="4" fill="#0D2340"/>
-                            <text x="293" y="28" fill="#FFF" font-size="9" font-weight="bold">METHOD</text>
-
-                            <!-- Lower Rib 1: MATERIAL -->
-                            <line x1="120" y1="115" x2="190" y2="195" stroke="#F97316" stroke-width="2.5"/>
-                            <rect x="160" y="195" width="75" height="20" rx="4" fill="#F97316"/>
-                            <text x="171" y="208" fill="#FFF" font-size="9" font-weight="bold">MATERIAL</text>
-
-                            <!-- Lower Rib 2: ENVIRONMENT -->
-                            <line x1="270" y1="115" x2="340" y2="195" stroke="#F97316" stroke-width="2.5"/>
-                            <rect x="305" y="195" width="85" height="20" rx="4" fill="#F97316"/>
-                            <text x="313" y="208" fill="#FFF" font-size="9" font-weight="bold">ENVIRON.</text>
-
-                            <!-- Node Indicators -->
-                            <circle cx="135" cy="65" r="4" fill="#10B981"/>
-                            <text x="65" y="68" fill="#333" font-size="8">Nozzle Wear</text>
-
-                            <circle cx="285" cy="65" r="4" fill="#10B981"/>
-                            <text x="225" y="68" fill="#333" font-size="8">Initial Setup</text>
-
-                            <circle cx="165" cy="165" r="4" fill="#F59E0B"/>
-                            <text x="95" y="168" fill="#333" font-size="8">Paste Viscosity</text>
-
-                            <circle cx="315" cy="165" r="4" fill="#F59E0B"/>
-                            <text x="245" y="168" fill="#333" font-size="8">RH Spikes &gt;65%</text>
-
-                            <circle r="5" fill="#10B981" class="laser-pulse">
-                                <animateMotion dur="3s" repeatCount="indefinite" path="M 20 115 L 430 115"/>
+                    <!-- Animated Flowchart SVG -->
+                    <div class="w-full bg-slate-900 rounded-xl p-6 relative shadow-inner overflow-hidden border border-navy">
+                        <svg class="w-full h-48 md:h-64" viewBox="0 0 900 220" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <!-- Flow Path -->
+                            <path id="flowPath" d="M 80 110 L 250 110 L 420 110 L 590 110 L 760 110" stroke="#4A698C" stroke-width="4" stroke-dasharray="8 8" />
+                            
+                            <!-- Animated Pulse Marker -->
+                            <circle r="7" fill="#10B981">
+                                <animateMotion dur="6s" repeatCount="indefinite">
+                                    <mpath href="#flowPath"/>
+                                </animateMotion>
                             </circle>
+
+                            <!-- Node 1: Hard Synthetic Tasks -->
+                            <g transform="translate(20, 60)">
+                                <rect width="120" height="100" rx="12" fill="#0D2340" stroke="#06B6D4" stroke-width="2"/>
+                                <text x="60" y="35" text-anchor="middle" fill="#06B6D4" font-size="12" font-weight="bold">1. TASK DESIGN</text>
+                                <text x="60" y="55" text-anchor="middle" fill="#FFFFFF" font-size="10">Novel & Hard</text>
+                                <text x="60" y="70" text-anchor="middle" fill="#FFFFFF" font-size="10">Prompts (TikZ, Math)</text>
+                            </g>
+
+                            <!-- Node 2: Zero-Shot Input -->
+                            <g transform="translate(190, 60)">
+                                <rect width="120" height="100" rx="12" fill="#0D2340" stroke="#4A698C" stroke-width="2"/>
+                                <text x="60" y="35" text-anchor="middle" fill="#8CA7C7" font-size="12" font-weight="bold">2. PROMPTING</text>
+                                <text x="60" y="55" text-anchor="middle" fill="#FFFFFF" font-size="10">Natural Language</text>
+                                <text x="60" y="70" text-anchor="middle" fill="#FFFFFF" font-size="10">Zero-Shot Queries</text>
+                            </g>
+
+                            <!-- Node 3: GPT-4 Execution -->
+                            <g transform="translate(360, 60)">
+                                <rect width="120" height="100" rx="12" fill="#0D2340" stroke="#F59E0B" stroke-width="2"/>
+                                <text x="60" y="35" text-anchor="middle" fill="#F59E0B" font-size="12" font-weight="bold">3. EXECUTION</text>
+                                <text x="60" y="55" text-anchor="middle" fill="#FFFFFF" font-size="10">Code Compiling /</text>
+                                <text x="60" y="70" text-anchor="middle" fill="#FFFFFF" font-size="10">Logic Generation</text>
+                            </g>
+
+                            <!-- Node 4: Qualitative Probe -->
+                            <g transform="translate(530, 60)">
+                                <rect width="120" height="100" rx="12" fill="#0D2340" stroke="#EC4899" stroke-width="2"/>
+                                <text x="60" y="35" text-anchor="middle" fill="#EC4899" font-size="12" font-weight="bold">4. PROBING</text>
+                                <text x="60" y="55" text-anchor="middle" fill="#FFFFFF" font-size="10">Iterative Editing</text>
+                                <text x="60" y="70" text-anchor="middle" fill="#FFFFFF" font-size="10">& Consistency Test</text>
+                            </g>
+
+                            <!-- Node 5: AGI Benchmark -->
+                            <g transform="translate(700, 60)">
+                                <rect width="120" height="100" rx="12" fill="#0D2340" stroke="#10B981" stroke-width="2"/>
+                                <text x="60" y="35" text-anchor="middle" fill="#10B981" font-size="12" font-weight="bold">5. EVALUATION</text>
+                                <text x="60" y="55" text-anchor="middle" fill="#FFFFFF" font-size="10">Human vs Model</text>
+                                <text x="60" y="70" text-anchor="middle" fill="#FFFFFF" font-size="10">Cognitive Comparison</text>
+                            </g>
                         </svg>
                     </div>
-
-                    <!-- Right Column Breakdown Card -->
-                    <div class="lg:col-span-4 space-y-4">
-                        <div class="bg-navy p-5 rounded-2xl text-white space-y-2">
-                            <span class="text-xs font-mono text-accent-yellow border border-accent-yellow/40 px-2.5 py-0.5 rounded">PRIMARY RISK VECTOR</span>
-                            <h3 class="text-lg font-bold font-heading">Dataset Training Paucity</h3>
-                            <p class="text-xs text-ice-muted leading-relaxed">
-                                AI visual models require ~5,000 labeled high-resolution defect images for initial calibration on new PCB layouts.
-                            </p>
-                        </div>
-
-                        <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200 text-xs space-y-2">
-                            <div class="font-bold text-navy flex items-center justify-between">
-                                <span>Mitigation Strategy</span>
-                                <i class="fa-solid fa-shield-halved text-accent-green"></i>
-                            </div>
-                            <p class="text-slate-600 leading-relaxed">
-                                Synthetic GAN image generation deployed to boost training dataset diversity and cut setup times to under 2 hours.
-                            </p>
-                        </div>
-                    </div>
                 </div>
 
-                <div class="bg-navy-dark text-ice-light p-3.5 rounded-xl flex justify-between items-center text-xs font-mono">
-                    <span>RISK STATUS: MITIGATED</span>
-                    <span class="text-accent-green font-bold">Residual Risk Level: Low</span>
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mt-4">
+                    <div class="p-3 bg-slate-50 rounded-xl border border-slate-200 text-xs">
+                        <strong class="text-navy block font-bold">1. Creative Synthesis</strong>
+                        Combine disparate fields (e.g. Math proof in Shakespeare poem).
+                    </div>
+                    <div class="p-3 bg-slate-50 rounded-xl border border-slate-200 text-xs">
+                        <strong class="text-navy block font-bold">2. Tool Interaction</strong>
+                        Ability to execute external Python code & parse feedback.
+                    </div>
+                    <div class="p-3 bg-slate-50 rounded-xl border border-slate-200 text-xs">
+                        <strong class="text-navy block font-bold">3. Spatial Mental Map</strong>
+                        Editing visuals (adding unicorn horn) without image sensors.
+                    </div>
+                    <div class="p-3 bg-slate-50 rounded-xl border border-slate-200 text-xs">
+                        <strong class="text-navy block font-bold">4. Fact Verification</strong>
+                        Detecting closed-domain vs open-domain hallucinations.
+                    </div>
                 </div>
             </div>
+        </section>
 
-            <!-- SLIDE 10: DATA & TECHNICAL CHARTS -->
-            <div id="slide-10" class="slide-pane w-full h-full p-6 sm:p-10 flex-col justify-between bg-white">
+        <!-- ==================== SLIDE 5: SIGNIFICANCE OF RESEARCH ==================== -->
+        <section id="slide-4" class="slide-content w-full h-full max-w-7xl mx-auto flex-col justify-center">
+            <div class="w-full h-full bg-white rounded-2xl shadow-xl border border-slate-200 p-8 md:p-12 flex flex-col justify-between">
                 <div>
-                    <div class="flex items-center justify-between mb-1">
-                        <div class="flex items-center gap-3">
-                            <span class="h-3.5 w-3.5 bg-navy rounded-full"></span>
-                            <span class="text-xs font-bold text-ice uppercase tracking-widest font-mono">Section 06 // Quantitative Telemetry</span>
-                        </div>
-                        <div class="flex gap-2">
-                            <button onclick="toggleChartDataset('ppm')" id="chart-btn-ppm" class="px-3 py-1 bg-navy text-white text-xs font-mono font-bold rounded shadow">PPM Trajectory</button>
-                            <button onclick="toggleChartDataset('oee')" id="chart-btn-oee" class="px-3 py-1 bg-slate-100 text-slate-600 text-xs font-mono font-bold rounded hover:bg-slate-200">OEE Growth</button>
-                        </div>
+                    <div class="flex items-center space-x-3 mb-6">
+                        <div class="w-3 h-8 bg-navy rounded-full"></div>
+                        <h2 class="font-title font-extrabold text-2xl md:text-4xl text-navy">Significance of Research</h2>
                     </div>
-                    <h2 class="text-3xl sm:text-4xl font-extrabold font-heading text-navy mb-1">10. Data & Technical Charts</h2>
-                    <p class="slide-body-text">Empirical defect rate trajectories and telemetry data table across 8 test production runs.</p>
+
+                    <!-- ECRS / Industrial Style 4 Block Layout -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
+                        
+                        <!-- Block 1 -->
+                        <div class="anime-card p-6 rounded-2xl border-l-4 border-accent-yellow flex space-x-4 items-start">
+                            <div class="w-12 h-12 rounded-xl bg-accent-yellow/10 flex items-center justify-center text-accent-yellow text-2xl flex-shrink-0">
+                                <i class="fa-solid fa-arrows-rotate"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-title font-bold text-lg text-navy">Paradigm Shift in AI Paradigm</h3>
+                                <p class="text-xs text-slate-600 mt-1 leading-relaxed">
+                                    Proves that next-word autoregressive prediction on sufficient compute/scale yields <strong>emergent general capabilities</strong> beyond narrow task automation.
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- Block 2 -->
+                        <div class="anime-card p-6 rounded-2xl border-l-4 border-accent-pink flex space-x-4 items-start">
+                            <div class="w-12 h-12 rounded-xl bg-accent-pink/10 flex items-center justify-center text-accent-pink text-2xl flex-shrink-0">
+                                <i class="fa-solid fa-[#EC4899] fa-laptop-code"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-title font-bold text-lg text-navy">Interdisciplinary Integration</h3>
+                                <p class="text-xs text-slate-600 mt-1 leading-relaxed">
+                                    Demonstrates seamless cognitive fluency across code generation, medical diagnostic reasoning, legal analysis, and creative artistic synthesis.
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- Block 3 -->
+                        <div class="anime-card p-6 rounded-2xl border-l-4 border-accent-green flex space-x-4 items-start">
+                            <div class="w-12 h-12 rounded-xl bg-accent-green/10 flex items-center justify-center text-accent-green text-2xl flex-shrink-0">
+                                <i class="fa-solid fa-screwdriver-wrench"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-title font-bold text-lg text-navy">Autonomous Tool Interaction</h3>
+                                <p class="text-xs text-slate-600 mt-1 leading-relaxed">
+                                    Shows GPT-4 can formulate strategies to query search engines, execute shell terminals, and self-correct calculation errors via external code runners.
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- Block 4 -->
+                        <div class="anime-card p-6 rounded-2xl border-l-4 border-accent-cyan flex space-x-4 items-start">
+                            <div class="w-12 h-12 rounded-xl bg-accent-cyan/10 flex items-center justify-center text-accent-cyan text-2xl flex-shrink-0">
+                                <i class="fa-solid fa-users"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-title font-bold text-lg text-navy">Socio-Economic & Safety Impact</h3>
+                                <p class="text-xs text-slate-600 mt-1 leading-relaxed">
+                                    Establishes urgent need for safety guidelines regarding job displacement, misinformation generation, and alignment of super-human capabilities.
+                                </p>
+                            </div>
+                        </div>
+
+                    </div>
                 </div>
 
-                <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 my-auto items-center">
-                    <!-- Left: Interactive Chart.js Graph -->
-                    <div class="lg:col-span-7 bg-slate-50 p-4 rounded-2xl border border-slate-200 shadow-sm">
-                        <div class="h-56 relative">
-                            <canvas id="mainChart"></canvas>
-                        </div>
+                <div class="p-4 bg-navy text-white rounded-xl flex items-center justify-between text-xs mt-4">
+                    <span><i class="fa-solid fa-quote-left text-accent-yellow mr-2"></i>"GPT-4 represents a true paradigm shift in computer science."</span>
+                    <span class="font-mono text-slate-300">- Microsoft Research</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== SLIDE 6: STRENGTHS ==================== -->
+        <section id="slide-5" class="slide-content w-full h-full max-w-7xl mx-auto flex-col justify-center">
+            <div class="w-full h-full bg-white rounded-2xl shadow-xl border border-slate-200 p-8 md:p-12 flex flex-col justify-between">
+                <div>
+                    <div class="flex items-center space-x-3 mb-6">
+                        <div class="w-3 h-8 bg-navy rounded-full"></div>
+                        <h2 class="font-title font-extrabold text-2xl md:text-4xl text-navy">Research Key Strengths</h2>
                     </div>
 
-                    <!-- Right: Data Table with Navy Header -->
-                    <div class="lg:col-span-5 overflow-hidden rounded-xl border border-slate-200 shadow-sm">
-                        <table class="w-full text-left text-xs border-collapse font-mono">
-                            <thead>
-                                <tr class="bg-navy text-white">
-                                    <th class="p-3">Batch</th>
-                                    <th class="p-3">Baseline</th>
-                                    <th class="p-3">AI-VSM Line</th>
-                                    <th class="p-3">Delta</th>
+                    <!-- 60:40 Split with Triangle Masked Graphic -->
+                    <div class="grid grid-cols-1 md:grid-cols-12 gap-8 items-center">
+                        <!-- 60% Text -->
+                        <div class="md:col-span-7 space-y-4">
+                            <div class="space-y-3">
+                                <div class="p-4 bg-slate-50 rounded-xl border border-slate-200">
+                                    <div class="flex items-center space-x-2 text-navy font-bold text-sm mb-1">
+                                        <i class="fa-solid fa-code text-accent-cyan"></i>
+                                        <span>LeetCode Software Engineer Assessment</span>
+                                    </div>
+                                    <p class="text-xs text-slate-600">
+                                        Solved all mock interview questions (Amazon On-Site) in <strong>3 minutes 59 seconds</strong> (out of 2 hours allotted), scoring 10/10 and beating <strong>100% of human users</strong>.
+                                    </p>
+                                </div>
+
+                                <div class="p-4 bg-slate-50 rounded-xl border border-slate-200">
+                                    <div class="flex items-center space-x-2 text-navy font-bold text-sm mb-1">
+                                        <i class="fa-solid fa-shapes text-accent-pink"></i>
+                                        <span>Non-Linguistic Vision via Code (TikZ/SVG)</span>
+                                    </div>
+                                    <p class="text-xs text-slate-600">
+                                        Despite being a pure text language model, it mentally rendered graphics—drawing a unicorn in TikZ and modifying code to re-attach a missing horn at precise spatial coordinates.
+                                    </p>
+                                </div>
+
+                                <div class="p-4 bg-slate-50 rounded-xl border border-slate-200">
+                                    <div class="flex items-center space-x-2 text-navy font-bold text-sm mb-1">
+                                        <i class="fa-solid fa-comments text-accent-green"></i>
+                                        <span>Human Empathy & Theory of Mind</span>
+                                    </div>
+                                    <p class="text-xs text-slate-600">
+                                        Passed complex psychological tests regarding human motives, realistic social reasoning, and commonsense physical stacking (e.g., eggs, laptop, book, bottle).
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 40% Right Visual Masked Graphic -->
+                        <div class="md:col-span-5 flex flex-col items-center justify-center">
+                            <div class="w-64 h-64 bg-navy mask-hexagon flex items-center justify-center p-6 shadow-xl relative">
+                                <div class="absolute inset-0 bg-gradient-to-b from-accent-cyan/30 to-navy"></div>
+                                <div class="relative z-10 text-center space-y-2 text-white">
+                                    <span class="text-4xl font-black text-accent-yellow block">100%</span>
+                                    <span class="text-xs font-mono uppercase tracking-wider block">Percentile Score</span>
+                                    <span class="text-[10px] text-slate-300 block">On LeetCode Technical Interview Benchmark</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex justify-between items-center pt-4 border-t border-slate-100 text-xs text-slate-400">
+                    <span>Performance Metric: Top Human Benchmark Tier</span>
+                    <span>Evaluation Method: Simulated Real-world Assessment</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== SLIDE 7: WEAKNESSES & LIMITATIONS ==================== -->
+        <section id="slide-6" class="slide-content w-full h-full max-w-7xl mx-auto flex-col justify-center">
+            <div class="w-full h-full bg-white rounded-2xl shadow-xl border border-slate-200 p-8 md:p-12 flex flex-col justify-between">
+                <div>
+                    <div class="flex items-center space-x-3 mb-4">
+                        <div class="w-3 h-8 bg-navy rounded-full"></div>
+                        <h2 class="font-title font-extrabold text-2xl md:text-4xl text-navy">Weaknesses & Limitations</h2>
+                    </div>
+
+                    <p class="text-xs md:text-sm text-slate-600 mb-6">
+                        Despite general intelligence leaps, GPT-4 suffers from architectural limitations rooted in autoregressive next-token prediction without dedicated working memory planning.
+                    </p>
+
+                    <!-- Fishbone Diagram Visual Layout -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                        
+                        <!-- Limitation 1 -->
+                        <div class="anime-card p-5 rounded-xl border-t-4 border-red-500 space-y-3">
+                            <div class="flex items-center justify-between text-red-500 font-bold text-sm">
+                                <span>Hallucinations</span>
+                                <i class="fa-solid fa-ghost"></i>
+                            </div>
+                            <p class="text-xs text-slate-600 leading-relaxed">
+                                Generates plausible but false facts (e.g. placing McDonald's at SeaTac Gate C2 instead of Gate B).
+                            </p>
+                            <div class="p-2 bg-red-50 text-[10px] text-red-700 rounded font-mono">
+                                Confident Misinformation
+                            </div>
+                        </div>
+
+                        <!-- Limitation 2 -->
+                        <div class="anime-card p-5 rounded-xl border-t-4 border-amber-500 space-y-3">
+                            <div class="flex items-center justify-between text-amber-500 font-bold text-sm">
+                                <span>Lack of Planning</span>
+                                <i class="fa-solid fa-diagram-project"></i>
+                            </div>
+                            <p class="text-xs text-slate-600 leading-relaxed">
+                                Cannot look ahead during output generation; fails complex mental arithmetic without step-by-step scratchpads.
+                            </p>
+                            <div class="p-2 bg-amber-50 text-[10px] text-amber-700 rounded font-mono">
+                                Autoregressive Bottleneck
+                            </div>
+                        </div>
+
+                        <!-- Limitation 3 -->
+                        <div class="anime-card p-5 rounded-xl border-t-4 border-yellow-500 space-y-3">
+                            <div class="flex items-center justify-between text-yellow-600 font-bold text-sm">
+                                <span>Arithmetic Errors</span>
+                                <i class="fa-solid fa-calculator"></i>
+                            </div>
+                            <p class="text-xs text-slate-600 leading-relaxed">
+                                Makes simple calculation blunders in long equations unless coupled with Python code interpreters.
+                            </p>
+                            <div class="p-2 bg-yellow-50 text-[10px] text-yellow-800 rounded font-mono">
+                                Numeric Reasoning Flaw
+                            </div>
+                        </div>
+
+                        <!-- Limitation 4 -->
+                        <div class="anime-card p-5 rounded-xl border-t-4 border-purple-500 space-y-3">
+                            <div class="flex items-center justify-between text-purple-600 font-bold text-sm">
+                                <span>Discontinuous Memory</span>
+                                <i class="fa-solid fa-memory"></i>
+                            </div>
+                            <p class="text-xs text-slate-600 leading-relaxed">
+                                No continuous real-time learning post-training phase; updates only occur within context window session.
+                            </p>
+                            <div class="p-2 bg-purple-50 text-[10px] text-purple-800 rounded font-mono">
+                                Static Model State
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="p-3 bg-red-50 border border-red-200 rounded-xl text-xs text-red-800 flex items-center space-x-3">
+                    <i class="fa-solid fa-triangle-exclamation text-base"></i>
+                    <span><strong>Critical Conclusion:</strong> GPT-4 requires human oversight or tool integration (e.g., Code Execution) for high-stakes clinical or mathematical deployments.</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== SLIDE 8: DATA & TECHNICAL CHARTS ==================== -->
+        <section id="slide-7" class="slide-content w-full h-full max-w-7xl mx-auto flex-col justify-center">
+            <div class="w-full h-full bg-white rounded-2xl shadow-xl border border-slate-200 p-6 md:p-10 flex flex-col justify-between">
+                <div>
+                    <div class="flex items-center space-x-3 mb-4">
+                        <div class="w-3 h-8 bg-navy rounded-full"></div>
+                        <h2 class="font-title font-extrabold text-2xl md:text-3xl text-navy">Data & Technical Benchmarks</h2>
+                    </div>
+
+                    <!-- Chart Container -->
+                    <div class="grid grid-cols-1 md:grid-cols-12 gap-6 items-center">
+                        <div class="md:col-span-8 bg-slate-50 p-4 rounded-xl border border-slate-200">
+                            <div class="h-64 md:h-72 relative">
+                                <canvas id="benchmarkChart"></canvas>
+                            </div>
+                        </div>
+
+                        <div class="md:col-span-4 space-y-3">
+                            <div class="anime-card p-4 rounded-xl border-l-4 border-navy">
+                                <span class="text-xs font-mono text-slate-500 uppercase block">USMLE Exam Step 1-3</span>
+                                <span class="text-2xl font-black text-navy">~80% Accuracy</span>
+                                <p class="text-[11px] text-slate-600 mt-1">Surpasses passing score standard with zero medical fine-tuning.</p>
+                            </div>
+
+                            <div class="anime-card p-4 rounded-xl border-l-4 border-steel">
+                                <span class="text-xs font-mono text-slate-500 uppercase block">Multistate Bar Exam</span>
+                                <span class="text-2xl font-black text-navy">&gt; 70% Accuracy</span>
+                                <p class="text-[11px] text-slate-600 mt-1">Outperforms previous models (ChatGPT) by a wide margin.</p>
+                            </div>
+
+                            <div class="anime-card p-4 rounded-xl border-l-4 border-accent-green">
+                                <span class="text-xs font-mono text-slate-500 uppercase block">LeetCode Mock Interview</span>
+                                <span class="text-2xl font-black text-accent-green">100% Score</span>
+                                <p class="text-[11px] text-slate-600 mt-1">Beats 100% of human users in simulated tech candidate interviews.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex justify-between items-center pt-3 border-t border-slate-100 text-xs text-slate-400">
+                    <span>Source Data: arXiv:2303.12712 Section 1.2 & 3</span>
+                    <span>Comparison Tier: GPT-4 vs ChatGPT (3.5) vs Human Baseline</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== SLIDE 9: TECHNICAL COMPARISON TABLE ==================== -->
+        <section id="slide-8" class="slide-content w-full h-full max-w-7xl mx-auto flex-col justify-center">
+            <div class="w-full h-full bg-white rounded-2xl shadow-xl border border-slate-200 p-6 md:p-10 flex flex-col justify-between">
+                <div>
+                    <div class="flex items-center space-x-3 mb-4">
+                        <div class="w-3 h-8 bg-navy rounded-full"></div>
+                        <h2 class="font-title font-extrabold text-2xl md:text-3xl text-navy">Qualitative Comparison Table</h2>
+                    </div>
+
+                    <!-- Technical Clean Table Design -->
+                    <div class="overflow-x-auto rounded-xl border border-navy/20 shadow-sm mt-2">
+                        <table class="w-full text-left text-xs md:text-sm">
+                            <thead class="bg-navy text-white font-title uppercase tracking-wider text-xs">
+                                <tr>
+                                    <th class="p-3.5 border-b border-navy-dark">Evaluation Metric</th>
+                                    <th class="p-3.5 border-b border-navy-dark">ChatGPT (GPT-3.5)</th>
+                                    <th class="p-3.5 border-b border-navy-dark bg-navy-light text-accent-cyan">GPT-4 (Early Version)</th>
+                                    <th class="p-3.5 border-b border-navy-dark">AGI Paradigm Significance</th>
                                 </tr>
                             </thead>
-                            <tbody class="divide-y divide-slate-200 bg-white text-charcoal">
-                                <tr class="hover:bg-slate-50"><td class="p-2.5">Batch 1</td><td class="p-2.5">1,250</td><td class="p-2.5 text-accent-green font-bold">1,250</td><td class="p-2.5 text-slate-400">0%</td></tr>
-                                <tr class="hover:bg-slate-50"><td class="p-2.5">Batch 3</td><td class="p-2.5">1,310</td><td class="p-2.5 text-accent-green font-bold">520</td><td class="p-2.5 text-emerald-600 font-bold">-60.3%</td></tr>
-                                <tr class="hover:bg-slate-50"><td class="p-2.5">Batch 5</td><td class="p-2.5">1,280</td><td class="p-2.5 text-accent-green font-bold">210</td><td class="p-2.5 text-emerald-600 font-bold">-83.6%</td></tr>
-                                <tr class="hover:bg-slate-50"><td class="p-2.5">Batch 8</td><td class="p-2.5">1,190</td><td class="p-2.5 text-accent-green font-bold">140</td><td class="p-2.5 text-emerald-600 font-bold">-88.2%</td></tr>
+                            <tbody class="divide-y divide-slate-200 text-slate-700 bg-white">
+                                <tr class="hover:bg-slate-50">
+                                    <td class="p-3.5 font-bold text-navy">TikZ Vector Art (Unicorn)</td>
+                                    <td class="p-3.5 text-red-600">Basic/Malformed geometric shapes</td>
+                                    <td class="p-3.5 font-semibold bg-accent-cyan/5 text-navy">Detailed, scalable, spatially coherent</td>
+                                    <td class="p-3.5 text-xs text-slate-500">Internal visual spatial mental model</td>
+                                </tr>
+                                <tr class="hover:bg-slate-50">
+                                    <td class="p-3.5 font-bold text-navy">Interdisciplinary Poetry/Math</td>
+                                    <td class="p-3.5 text-amber-600">Rhyme inconsistencies, generic format</td>
+                                    <td class="p-3.5 font-semibold bg-accent-cyan/5 text-navy">Flawless meter, Shakespearean style</td>
+                                    <td class="p-3.5 text-xs text-slate-500">Fluid cross-domain concept synthesis</td>
+                                </tr>
+                                <tr class="hover:bg-slate-50">
+                                    <td class="p-3.5 font-bold text-navy">Physical Commonsense Stack</td>
+                                    <td class="p-3.5 text-red-600">Failed (Balanced eggs on nail)</td>
+                                    <td class="p-3.5 font-semibold bg-accent-cyan/5 text-navy">Passed (Book -> Eggs -> Laptop -> Bottle)</td>
+                                    <td class="p-3.5 text-xs text-slate-500">Intuitive physical world grounding</td>
+                                </tr>
+                                <tr class="hover:bg-slate-50">
+                                    <td class="p-3.5 font-bold text-navy">Self-Correction of Verification</td>
+                                    <td class="p-3.5 text-slate-500">Low closed-domain accuracy</td>
+                                    <td class="p-3.5 font-semibold bg-accent-cyan/5 text-navy">Identifies own hallucinations & BMI gaps</td>
+                                    <td class="p-3.5 text-xs text-slate-500">Metacognitive critique capacity</td>
+                                </tr>
                             </tbody>
                         </table>
                     </div>
                 </div>
 
-                <div class="bg-navy-dark text-white p-3.5 rounded-xl flex justify-between items-center text-xs font-mono">
-                    <span>STATISTICAL TESTING: Two-Way ANOVA Analysis</span>
-                    <span class="text-accent-yellow">p &lt; 0.001 (Highly Significant)</span>
+                <div class="p-3 bg-slate-50 rounded-xl text-xs text-slate-600 flex justify-between items-center border border-slate-200">
+                    <span><strong>Table Note:</strong> Based on prompts documented in Research Sections 1.1, 1.2, and 2.1.</span>
+                    <span class="font-mono text-navy font-bold">Industrial Standard Comparison</span>
                 </div>
             </div>
+        </section>
 
-            <!-- SLIDE 11: KEY CONCLUSIONS & SUMMARY METRICS -->
-            <div id="slide-11" class="slide-pane w-full h-full p-6 sm:p-10 flex-col justify-between bg-white">
+        <!-- ==================== SLIDE 10: CONCLUSION ==================== -->
+        <section id="slide-9" class="slide-content w-full h-full max-w-7xl mx-auto flex-col justify-center">
+            <div class="w-full h-full bg-white rounded-2xl shadow-xl border border-slate-200 p-8 md:p-12 flex flex-col justify-between">
                 <div>
-                    <div class="flex items-center gap-3 mb-1">
-                        <span class="h-3.5 w-3.5 bg-navy rounded-full"></span>
-                        <span class="text-xs font-bold text-ice uppercase tracking-widest font-mono">Section 07 // Synthesis</span>
-                    </div>
-                    <h2 class="text-3xl sm:text-4xl font-extrabold font-heading text-navy mb-2">11. Key Conclusions</h2>
-                    <p class="slide-body-text">Summary of verified engineering outcomes and manufacturing productivity gains.</p>
-                </div>
-
-                <div class="grid grid-cols-1 sm:grid-cols-3 gap-6 my-auto">
-                    <!-- KPI Card 1 -->
-                    <div class="bg-gradient-to-br from-navy to-navy-dark text-white p-6 rounded-2xl shadow-lg flex flex-col justify-between hover-card-elevate">
-                        <div class="text-xs font-mono text-ice-light uppercase">Overall Equipment Efficiency</div>
-                        <div class="my-4">
-                            <span class="text-5xl font-black font-heading text-accent-green" data-countup="24.8" data-prefix="+" data-suffix="%">+24.8%</span>
-                            <span class="block text-sm text-slate-300 mt-2">OEE Elevated from 64.2% to 89.0%</span>
-                        </div>
-                        <div class="text-xs text-slate-400 border-t border-navy-light pt-2 font-mono">
-                            World-class Lean Standard achieved.
-                        </div>
+                    <div class="flex items-center space-x-3 mb-6">
+                        <div class="w-3 h-8 bg-navy rounded-full"></div>
+                        <h2 class="font-title font-extrabold text-2xl md:text-4xl text-navy">Research Summary & Conclusion</h2>
                     </div>
 
-                    <!-- KPI Card 2 -->
-                    <div class="bg-gradient-to-br from-navy to-navy-dark text-white p-6 rounded-2xl shadow-lg flex flex-col justify-between hover-card-elevate">
-                        <div class="text-xs font-mono text-ice-light uppercase">Defect Cost Reduction</div>
-                        <div class="my-4">
-                            <span class="text-5xl font-black font-heading text-accent-orange" data-countup="41.5" data-prefix="-" data-suffix="%">-41.5%</span>
-                            <span class="block text-sm text-slate-300 mt-2">Scrap Rate Dropped to 0.42%</span>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-4">
+                        <div class="anime-card p-6 rounded-2xl border-t-4 border-navy space-y-3">
+                            <div class="w-10 h-10 rounded-lg bg-navy/10 flex items-center justify-center text-navy font-bold">01</div>
+                            <h3 class="font-title font-bold text-lg text-navy">Early AGI Pioneer</h3>
+                            <p class="text-xs text-slate-600 leading-relaxed">
+                                GPT-4 can reasonably be viewed as an <strong>early (yet incomplete) AGI system</strong>, displaying human-level breadth and depth across varied domains.
+                            </p>
                         </div>
-                        <div class="text-xs text-slate-400 border-t border-navy-light pt-2 font-mono">
-                            Annual scrap savings: $184k per line.
-                        </div>
-                    </div>
 
-                    <!-- KPI Card 3 -->
-                    <div class="bg-gradient-to-br from-navy to-navy-dark text-white p-6 rounded-2xl shadow-lg flex flex-col justify-between hover-card-elevate">
-                        <div class="text-xs font-mono text-ice-light uppercase">Throughput Output</div>
-                        <div class="my-4">
-                            <span class="text-5xl font-black font-heading text-accent-yellow" data-countup="254" data-suffix=" UPH">254 UPH</span>
-                            <span class="block text-sm text-slate-300 mt-2">Units per Hour Line Rate</span>
+                        <div class="anime-card p-6 rounded-2xl border-t-4 border-steel space-y-3">
+                            <div class="w-10 h-10 rounded-lg bg-steel/10 flex items-center justify-center text-steel font-bold">02</div>
+                            <h3 class="font-title font-bold text-lg text-navy">Beyond Next-Word Prediction</h3>
+                            <p class="text-xs text-slate-600 leading-relaxed">
+                                Scaling transformer architectures creates emergent behaviors that transcend memorization, forming abstract cognitive representations.
+                            </p>
                         </div>
-                        <div class="text-xs text-slate-400 border-t border-navy-light pt-2 font-mono">
-                            Up from 165 UPH baseline speed.
+
+                        <div class="anime-card p-6 rounded-2xl border-t-4 border-accent-green space-y-3">
+                            <div class="w-10 h-10 rounded-lg bg-accent-green/10 flex items-center justify-center text-accent-green font-bold">03</div>
+                            <h3 class="font-title font-bold text-lg text-navy">Next Paradigm Needed</h3>
+                            <p class="text-xs text-slate-600 leading-relaxed">
+                                True general intelligence requires moving beyond autoregressive limitations to incorporate <strong>deliberate planning, working memory, and real-time learning</strong>.
+                            </p>
                         </div>
                     </div>
                 </div>
 
-                <div class="bg-slate-50 border-l-4 border-navy p-4 rounded-r-xl">
-                    <h3 class="font-bold text-navy text-base">Final Engineering Takeaway</h3>
-                    <p class="slide-body-text text-charcoal">
-                        Integrating closed-loop edge AI vision with Lean Value Stream Mapping (VSM) creates a scalable, high-yield blueprint for high-mix low-volume electronic assembly lines.
-                    </p>
+                <div class="p-4 bg-slate-100 rounded-xl text-xs text-slate-700 font-mono text-center">
+                    Full Reference: Bubeck et al. (2023). "Sparks of Artificial General Intelligence: Early experiments with GPT-4." arXiv preprint arXiv:2303.12712.
                 </div>
             </div>
+        </section>
 
-            <!-- SLIDE 12: CLOSING / Q&A (FULL NAVY BACKGROUND WITH EXPANDING RINGS) -->
-            <div id="slide-12" class="slide-pane w-full h-full bg-navy text-white p-8 sm:p-16 flex-col justify-between relative overflow-hidden bg-grid-pattern">
-                <!-- Subtle Expanding Geometric Rings -->
-                <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
-                    <div class="w-96 h-96 rounded-full border border-ice/20 ring-pulse-1"></div>
-                    <div class="w-[30rem] h-[30rem] rounded-full border border-accent-orange/20 ring-pulse-2 absolute"></div>
-                </div>
+        <!-- ==================== SLIDE 11: CLOSING / Q&A ==================== -->
+        <section id="slide-10" class="slide-content w-full h-full max-w-7xl mx-auto flex-col justify-center">
+            <div class="w-full h-full bg-navy rounded-2xl shadow-2xl border border-navy-dark p-8 md:p-16 flex flex-col justify-between items-center text-center text-white relative overflow-hidden">
+                <!-- Background Glowing Orbs -->
+                <div class="absolute -top-20 -left-20 w-80 h-80 bg-accent-cyan/10 rounded-full blur-3xl"></div>
+                <div class="absolute -bottom-20 -right-20 w-80 h-80 bg-accent-pink/10 rounded-full blur-3xl"></div>
 
-                <div class="relative z-10 flex justify-between items-center border-b border-navy-light/60 pb-6">
-                    <div class="flex items-center gap-3">
-                        <span class="h-3 w-3 bg-accent-orange rounded-full animate-ping"></span>
-                        <span class="text-xs font-mono tracking-widest text-ice-light uppercase">Presentation Concluded</span>
+                <div class="my-auto space-y-6 relative z-10">
+                    <div class="inline-flex items-center space-x-2 bg-navy-light text-accent-yellow border border-accent-yellow/30 text-xs px-4 py-1.5 rounded-full uppercase tracking-widest font-semibold">
+                        <i class="fa-solid fa-comments"></i>
+                        <span>End of Presentation</span>
                     </div>
-                    <span class="text-xs font-mono text-slate-400">DECK ID: ENG-2026-SMT-AI</span>
-                </div>
 
-                <!-- Main Bold Closing Text -->
-                <div class="my-auto text-center relative z-10 py-8">
-                    <h1 class="text-6xl sm:text-7xl lg:text-8xl font-black font-heading tracking-tight text-white mb-4">
+                    <h1 class="font-title font-black text-5xl md:text-7xl lg:text-8xl tracking-tight text-white">
                         THANK YOU
                     </h1>
-                    <p class="text-2xl sm:text-3xl font-light text-accent-yellow max-w-2xl mx-auto mb-8 font-heading">
-                        Floor Open for Questions & Discussion
+
+                    <p class="text-slate-300 text-lg md:text-2xl font-light tracking-wide max-w-2xl mx-auto">
+                        Questions & Academic Discussion
                     </p>
 
-                    <div class="inline-flex items-center gap-3 bg-navy-light/90 border border-ice/40 px-8 py-3.5 rounded-full text-base font-mono text-white shadow-2xl hover:scale-105 transition transform">
-                        <i class="fa-solid fa-comments text-accent-green text-xl animate-bounce"></i>
-                        <span>Committee & Audience Q&A Session</span>
+                    <div class="pt-6 flex justify-center space-x-4 text-xs font-mono text-slate-400">
+                        <span class="bg-navy-dark px-4 py-2 rounded-lg border border-steel-dark">Engineering Presentation Deck</span>
+                        <span class="bg-navy-dark px-4 py-2 rounded-lg border border-steel-dark">Microsoft Research Review</span>
                     </div>
                 </div>
 
-                <!-- Contact Panel -->
-                <div class="relative z-10 grid grid-cols-1 md:grid-cols-3 gap-4 border-t border-navy-light/60 pt-6 text-xs text-slate-300 font-mono">
-                    <div>
-                        <span class="block text-ice-light font-bold uppercase mb-1">Lead Researcher</span>
-                        <span>dr.mercer@automation-lab.org</span>
-                    </div>
-                    <div>
-                        <span class="block text-ice-light font-bold uppercase mb-1">Research Laboratory</span>
-                        <span>Advanced Industrial Systems & Robotics</span>
-                    </div>
-                    <div>
-                        <span class="block text-ice-light font-bold uppercase mb-1">Code Repository</span>
-                        <span>github.com/smt-vsm-ai-2026</span>
-                    </div>
+                <div class="text-xs text-slate-500 font-mono relative z-10">
+                    Press <kbd class="px-2 py-1 bg-navy-light rounded text-white">←</kbd> or <kbd class="px-2 py-1 bg-navy-light rounded text-white">→</kbd> keys to navigate presentation slides.
                 </div>
             </div>
+        </section>
 
-        </div>
     </main>
 
-    <!-- FOOTER STATUS BAR -->
-    <footer class="bg-navy-dark text-ice-light h-10 px-4 md:px-8 flex items-center justify-between text-xs border-t border-navy-light shrink-0 z-50 font-mono">
-        <div class="flex items-center space-x-4">
-            <span class="flex items-center gap-1.5"><i class="fa-solid fa-keyboard text-accent-yellow"></i> Keyboard Arrows Enabled</span>
-            <span class="hidden md:inline text-slate-500">|</span>
-            <span class="hidden md:inline text-slate-400">Slide 6 Stepper Active</span>
+    <footer class="w-full bg-white/90 backdrop-blur-md border-t border-slate-200 px-6 py-3 flex items-center justify-between z-50">
+        <!-- Previous Slide Button -->
+        <button id="prev-btn" onclick="prevSlide()" class="flex items-center space-x-2 bg-slate-100 hover:bg-navy hover:text-white text-navy font-bold text-xs md:text-sm px-4 py-2 rounded-xl transition duration-200 border border-slate-300">
+            <i class="fa-solid fa-chevron-left"></i>
+            <span class="hidden sm:inline">Previous</span>
+        </button>
+
+        <!-- Slide Indicators (Dots) -->
+        <div id="dots-container" class="flex items-center space-x-1.5 md:space-x-2 overflow-x-auto max-w-xs md:max-w-md px-2">
+            <!-- Rendered by JS -->
         </div>
-        <div class="text-slate-400 text-[11px]">
-            Engineering Deck Standard v4.2
-        </div>
+
+        <!-- Next Slide Button -->
+        <button id="next-btn" onclick="nextSlide()" class="flex items-center space-x-2 bg-navy hover:bg-navy-light text-white font-bold text-xs md:text-sm px-5 py-2 rounded-xl transition duration-200 shadow-md">
+            <span class="hidden sm:inline">Next</span>
+            <i class="fa-solid fa-chevron-right"></i>
+        </button>
     </footer>
 
-    <!-- SLIDE INDEX DRAWER MODAL -->
-    <div id="outline-modal" class="fixed inset-0 bg-black/75 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
-        <div class="bg-white text-navy w-full max-w-4xl rounded-2xl shadow-2xl p-6 border border-slate-300">
-            <div class="flex justify-between items-center mb-6 border-b pb-4">
-                <h3 class="text-xl font-bold font-heading text-navy flex items-center gap-2">
-                    <i class="fa-solid fa-list-squares text-ice"></i> 12-Slide Navigation Drawer
-                </h3>
-                <button onclick="toggleOutlineModal()" class="text-slate-400 hover:text-navy text-lg p-1">
-                    <i class="fa-solid fa-xmark"></i>
-                </button>
-            </div>
-
-            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 max-h-[65vh] overflow-y-auto pr-2" id="outline-list">
-                <!-- Dynamically populated via JS -->
-            </div>
-        </div>
-    </div>
-
     <script>
-        const slides = [
-            { id: 'slide-1', title: '1. Cover: SMT Optimization' },
-            { id: 'slide-2', title: '2. Strategic Research Objectives' },
-            { id: 'slide-3', title: '3. Independent Variables' },
-            { id: 'slide-4', title: '4. Dependent Quality Metrics' },
-            { id: 'slide-5', title: '5. Engineering Control Variables' },
-            { id: 'slide-6', title: '6. Methodology & Process Flowchart' },
-            { id: 'slide-7', title: '7. Research Significance & ECRS' },
-            { id: 'slide-8', title: '8. Technical System Strengths' },
-            { id: 'slide-9', title: '9. Weaknesses & Fishbone Risk Map' },
-            { id: 'slide-10', title: '10. Quantitative Charts & Data Table' },
-            { id: 'slide-11', title: '11. Key Conclusions & Summary' },
-            { id: 'slide-12', title: '12. Thank You & Q&A Session' }
+        const slideTitles = [
+            "1. Research Title",
+            "2. Objectives",
+            "3. Experimental Variables",
+            "4. Methodology & Flowchart",
+            "5. Significance of Research",
+            "6. Research Key Strengths",
+            "7. Weaknesses & Limitations",
+            "8. Technical Data & Charts",
+            "9. Qualitative Comparison Table",
+            "10. Research Summary",
+            "11. Closing / Q&A"
         ];
 
-        let currentSlideIndex = 0;
-        let currentSubstepIndex = 0;
+        let currentSlide = 0;
+        const totalSlides = slideTitles.length;
         let chartInstance = null;
-        let autoplayInterval = null;
 
-        function showSlide(index) {
-            if (index < 0 || index >= slides.length) return;
-            
-            document.querySelectorAll('.slide-pane').forEach(el => el.classList.remove('active'));
-            
-            currentSlideIndex = index;
-            const targetSlide = document.getElementById(slides[currentSlideIndex].id);
-            if (targetSlide) {
-                targetSlide.classList.add('active');
-                triggerCountUpAnimations(targetSlide);
+        // Initialize Navigation UI
+        document.getElementById('total-slides-num').innerText = String(totalSlides).padStart(2, '0');
+
+        function renderDots() {
+            const dotsContainer = document.getElementById('dots-container');
+            dotsContainer.innerHTML = '';
+            for (let i = 0; i < totalSlides; i++) {
+                const dot = document.createElement('button');
+                dot.className = `h-2 rounded-full transition-all duration-300 ${i === currentSlide ? 'w-8 bg-navy' : 'w-2 bg-slate-300 hover:bg-slate-400'}`;
+                dot.setAttribute('title', slideTitles[i]);
+                dot.onclick = () => goToSlide(i);
+                dotsContainer.appendChild(dot);
+            }
+        }
+
+        function updateSlideUI() {
+            // Hide all slides
+            for (let i = 0; i < totalSlides; i++) {
+                const slide = document.getElementById(`slide-${i}`);
+                if (slide) {
+                    slide.classList.remove('active');
+                }
             }
 
-            document.getElementById('nav-slide-title').innerText = slides[currentSlideIndex].title;
-            document.getElementById('slide-number-label').innerText = 
-                `${String(currentSlideIndex + 1).padStart(2, '0')} / ${String(slides.length).padStart(2, '0')}`;
-            
-            const progressPct = ((currentSlideIndex + 1) / slides.length) * 100;
-            document.getElementById('progress-bar').style.width = `${progressPct}%`;
+            // Show current slide
+            const activeSlide = document.getElementById(`slide-${currentSlide}`);
+            if (activeSlide) {
+                activeSlide.classList.add('active');
+            }
 
-            document.getElementById('prev-btn').disabled = (currentSlideIndex === 0);
-            document.getElementById('next-btn').disabled = (currentSlideIndex === slides.length - 1);
+            // Update display counters and title
+            document.getElementById('current-slide-num').innerText = String(currentSlide + 1).padStart(2, '0');
+            document.getElementById('nav-title-display').innerText = slideTitles[currentSlide];
 
-            if (currentSlideIndex === 9 && !chartInstance) {
-                initMainChart();
+            // Enable/Disable buttons
+            document.getElementById('prev-btn').disabled = currentSlide === 0;
+            document.getElementById('prev-btn').style.opacity = currentSlide === 0 ? "0.5" : "1";
+
+            if (currentSlide === totalSlides - 1) {
+                document.getElementById('next-btn').innerHTML = `<span>Finish</span> <i class="fa-solid fa-flag-checkered"></i>`;
+            } else {
+                document.getElementById('next-btn').innerHTML = `<span class="hidden sm:inline">Next</span> <i class="fa-solid fa-chevron-right"></i>`;
+            }
+
+            renderDots();
+
+            // Render Chart if on chart slide
+            if (currentSlide === 7) {
+                setTimeout(initChart, 100);
             }
         }
 
         function nextSlide() {
-            if (currentSlideIndex < slides.length - 1) {
-                showSlide(currentSlideIndex + 1);
+            if (currentSlide < totalSlides - 1) {
+                currentSlide++;
+                updateSlideUI();
             }
         }
 
         function prevSlide() {
-            if (currentSlideIndex > 0) {
-                showSlide(currentSlideIndex - 1);
+            if (currentSlide > 0) {
+                currentSlide--;
+                updateSlideUI();
             }
         }
 
-        /* Slide 6 Methodology Stepper Tracer Circle X-Coordinates */
-        const substepXPositions = [70, 210, 350, 490, 630];
+        function goToSlide(index) {
+            if (index >= 0 && index < totalSlides) {
+                currentSlide = index;
+                updateSlideUI();
+            }
+        }
 
-        function setSubstep(index) {
-            if (index < 0 || index > 4) return;
-            currentSubstepIndex = index;
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight' || e.key === 'Space') {
+                nextSlide();
+            } else if (e.key === 'ArrowLeft') {
+                prevSlide();
+            }
+        });
 
-            document.querySelectorAll('.substep-pane').forEach(el => el.classList.remove('active'));
-            const target = document.getElementById(`substep-${currentSubstepIndex}`);
-            if (target) target.classList.add('active');
-
-            const circle = document.getElementById('stepTrackerCircle');
-            if (circle) circle.setAttribute('cx', substepXPositions[currentSubstepIndex]);
-
-            for (let i = 0; i < 5; i++) {
-                const btn = document.getElementById(`subtab-${i}`);
-                if (btn) {
-                    if (i === currentSubstepIndex) {
-                        btn.className = 'py-2 px-2 rounded text-xs font-mono font-bold transition bg-accent-orange text-navy shadow';
-                    } else {
-                        btn.className = 'py-2 px-2 rounded text-xs font-mono font-bold transition bg-navy-light text-ice-light hover:bg-ice';
-                    }
+        function toggleFullscreen() {
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen().catch(err => {
+                    console.log(`Error attempting to enable fullscreen: ${err.message}`);
+                });
+                document.getElementById('fullscreen-icon').className = "fa-solid fa-compress text-base";
+            } else {
+                if (document.exitFullscreen) {
+                    document.exitFullscreen();
+                    document.getElementById('fullscreen-icon').className = "fa-solid fa-expand text-base";
                 }
             }
-
-            const label = document.getElementById('substep-phase-label');
-            if (label) label.innerText = `STEP ${currentSubstepIndex + 1} OF 5`;
         }
 
-        function nextSubstep() {
-            setSubstep((currentSubstepIndex + 1) % 5);
-        }
+        function initChart() {
+            const ctx = document.getElementById('benchmarkChart');
+            if (!ctx) return;
 
-        function prevSubstep() {
-            setSubstep((currentSubstepIndex - 1 + 5) % 5);
-        }
+            if (chartInstance) {
+                chartInstance.destroy();
+            }
 
-        /* Precision Dynamic Count-Up Animation */
-        function triggerCountUpAnimations(container) {
-            const elements = container.querySelectorAll('[data-countup]');
-            elements.forEach(el => {
-                const targetVal = parseFloat(el.getAttribute('data-countup'));
-                const prefix = el.getAttribute('data-prefix') || '';
-                const suffix = el.getAttribute('data-suffix') || '';
-                const isFloat = targetVal % 1 !== 0;
-                
-                let startTimestamp = null;
-                const duration = 1200; // ms
-
-                function step(timestamp) {
-                    if (!startTimestamp) startTimestamp = timestamp;
-                    const progress = Math.min((timestamp - startTimestamp) / duration, 1);
-                    // Cubic ease-out
-                    const easeProgress = 1 - Math.pow(1 - progress, 3);
-                    const currentVal = easeProgress * targetVal;
-                    
-                    el.innerText = prefix + (isFloat ? currentVal.toFixed(1) : Math.round(currentVal)) + suffix;
-                    
-                    if (progress < 1) {
-                        window.requestAnimationFrame(step);
-                    }
-                }
-                window.requestAnimationFrame(step);
-            });
-        }
-
-        /* Chart.js Initialization for Slide 10 */
-        function initMainChart() {
-            const ctx = document.getElementById('mainChart').getContext('2d');
             chartInstance = new Chart(ctx, {
-                type: 'line',
+                type: 'bar',
                 data: {
-                    labels: ['Batch 1', 'Batch 2', 'Batch 3', 'Batch 4', 'Batch 5', 'Batch 6', 'Batch 7', 'Batch 8'],
+                    labels: ['USMLE Step 1-3', 'Multistate Bar', 'LeetCode Interview', 'Math Datasets'],
                     datasets: [
                         {
-                            label: 'Baseline Defect Rate (PPM)',
-                            data: [1250, 1180, 1310, 1200, 1280, 1150, 1220, 1190],
-                            borderColor: '#F97316',
-                            borderWidth: 2,
-                            borderDash: [5, 5],
-                            pointRadius: 4,
-                            fill: false,
+                            label: 'GPT-4 (Early Version)',
+                            data: [80, 72, 100, 84],
+                            backgroundColor: '#0D2340',
+                            borderRadius: 6
                         },
                         {
-                            label: 'AI-VSM Optimized Line (PPM)',
-                            data: [1250, 840, 520, 310, 210, 180, 150, 140],
-                            borderColor: '#10B981',
-                            backgroundColor: 'rgba(16, 185, 129, 0.12)',
-                            borderWidth: 3,
-                            pointRadius: 6,
-                            pointBackgroundColor: '#10B981',
-                            fill: true,
-                            tension: 0.35
+                            label: 'ChatGPT (GPT-3.5)',
+                            data: [50, 45, 40, 52],
+                            backgroundColor: '#4A698C',
+                            borderRadius: 6
+                        },
+                        {
+                            label: 'Human Passing Baseline',
+                            data: [60, 60, 65, 70],
+                            backgroundColor: '#EAB308',
+                            borderRadius: 6
                         }
                     ]
                 },
@@ -1347,134 +1043,41 @@
                     plugins: {
                         legend: {
                             position: 'top',
-                            labels: { font: { family: 'Inter', size: 12 }, color: '#222' }
+                            labels: {
+                                font: {
+                                    family: 'Inter',
+                                    size: 11
+                                }
+                            }
+                        },
+                        title: {
+                            display: true,
+                            text: 'Accuracy Comparison Across Academic & Professional Benchmarks (%)',
+                            font: {
+                                family: 'Kanit',
+                                size: 14,
+                                weight: 'bold'
+                            },
+                            color: '#0D2340'
                         }
                     },
                     scales: {
-                        x: {
-                            grid: { display: false },
-                            ticks: { font: { family: 'Courier New', size: 11 } }
-                        },
                         y: {
-                            grid: { color: '#E2E8F0' },
-                            ticks: { font: { family: 'Courier New', size: 11 } },
-                            title: { display: true, text: 'Defects (PPM)', font: { size: 11 } }
+                            beginAtZero: true,
+                            max: 100,
+                            ticks: {
+                                callback: function(value) { return value + '%'; }
+                            }
                         }
                     }
                 }
             });
         }
 
-        function toggleChartDataset(type) {
-            if (!chartInstance) return;
-
-            const btnPpm = document.getElementById('chart-btn-ppm');
-            const btnOee = document.getElementById('chart-btn-oee');
-
-            if (type === 'ppm') {
-                btnPpm.className = 'px-3 py-1 bg-navy text-white text-xs font-mono font-bold rounded shadow';
-                btnOee.className = 'px-3 py-1 bg-slate-100 text-slate-600 text-xs font-mono font-bold rounded hover:bg-slate-200';
-                
-                chartInstance.data.datasets[0].label = 'Baseline Defect Rate (PPM)';
-                chartInstance.data.datasets[0].data = [1250, 1180, 1310, 1200, 1280, 1150, 1220, 1190];
-                chartInstance.data.datasets[1].label = 'AI-VSM Optimized Line (PPM)';
-                chartInstance.data.datasets[1].data = [1250, 840, 520, 310, 210, 180, 150, 140];
-                chartInstance.options.scales.y.title.text = 'Defects (PPM)';
-            } else {
-                btnOee.className = 'px-3 py-1 bg-navy text-white text-xs font-mono font-bold rounded shadow';
-                btnPpm.className = 'px-3 py-1 bg-slate-100 text-slate-600 text-xs font-mono font-bold rounded hover:bg-slate-200';
-
-                chartInstance.data.datasets[0].label = 'Baseline OEE (%)';
-                chartInstance.data.datasets[0].data = [64, 63, 65, 64, 62, 65, 64, 64];
-                chartInstance.data.datasets[1].label = 'AI-VSM Line OEE (%)';
-                chartInstance.data.datasets[1].data = [64, 69, 74, 79, 83, 86, 88, 89];
-                chartInstance.options.scales.y.title.text = 'OEE Metric (%)';
-            }
-            chartInstance.update();
-        }
-
-        function toggleOutlineModal() {
-            const modal = document.getElementById('outline-modal');
-            if (modal.classList.contains('hidden')) {
-                const container = document.getElementById('outline-list');
-                container.innerHTML = slides.map((s, idx) => `
-                    <div onclick="jumpToSlide(${idx})" class="p-3 border rounded-xl hover:border-navy hover:bg-blue-50/50 cursor-pointer flex justify-between items-center ${idx === currentSlideIndex ? 'border-navy bg-blue-50 font-bold' : 'border-slate-200'}">
-                        <span class="text-xs text-navy font-medium">${s.title}</span>
-                        <span class="text-[10px] text-slate-400 font-mono">#${String(idx + 1).padStart(2, '0')}</span>
-                    </div>
-                `).join('');
-                modal.classList.remove('hidden');
-            } else {
-                modal.classList.add('hidden');
-            }
-        }
-
-        function jumpToSlide(index) {
-            showSlide(index);
-            toggleOutlineModal();
-        }
-
-        function toggleAutoplay() {
-            const btnText = document.getElementById('autoplay-text');
-            const btnIcon = document.getElementById('autoplay-icon');
-
-            if (autoplayInterval) {
-                clearInterval(autoplayInterval);
-                autoplayInterval = null;
-                btnText.innerText = 'Auto';
-                btnIcon.className = 'fa-solid fa-play';
-            } else {
-                autoplayInterval = setInterval(() => {
-                    if (currentSlideIndex === 5) {
-                        if (currentSubstepIndex < 4) {
-                            nextSubstep();
-                        } else {
-                            nextSlide();
-                        }
-                    } else if (currentSlideIndex < slides.length - 1) {
-                        nextSlide();
-                    } else {
-                        showSlide(0);
-                    }
-                }, 4000);
-                btnText.innerText = 'Stop';
-                btnIcon.className = 'fa-solid fa-pause';
-            }
-        }
-
-        function toggleFullscreen() {
-            if (!document.fullscreenElement) {
-                document.documentElement.requestFullscreen().catch(err => {
-                    console.log(`Fullscreen error: ${err.message}`);
-                });
-            } else {
-                if (document.exitFullscreen) document.exitFullscreen();
-            }
-        }
-
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'ArrowRight' || e.key === 'Space') {
-                if (currentSlideIndex === 5 && currentSubstepIndex < 4) {
-                    nextSubstep();
-                } else {
-                    nextSlide();
-                }
-            } else if (e.key === 'ArrowLeft') {
-                if (currentSlideIndex === 5 && currentSubstepIndex > 0) {
-                    prevSubstep();
-                } else {
-                    prevSlide();
-                }
-            } else if (e.key === 'Escape') {
-                const modal = document.getElementById('outline-modal');
-                if (!modal.classList.contains('hidden')) modal.classList.add('hidden');
-            }
-        });
-
-        window.addEventListener('DOMContentLoaded', () => {
-            showSlide(0);
-            setSubstep(0);
-        });
+        // Initialize presentation on load
+        window.onload = function() {
+            updateSlideUI();
+        };
     </script>
 </body>
 </html>
